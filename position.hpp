@@ -102,8 +102,11 @@ constexpr std::array<position_t<W, H>, 4> neighborhs(const position_t<W, H>& pos
       move(pos, EDirection::West)};
 }
 
+template<coord_t W, coord_t H>
+using path_t = std::vector<position_t<W,H>>;
+
 template <coord_t W, coord_t H, typename pos_t = position_t<W, H>>
-std::vector<pos_t> findPath(const position_t<W, H>& start, const pos_t& goal) noexcept
+path_t<W,H> findPath(const position_t<W, H>& start, const pos_t& goal) noexcept
 {
   struct Hash {
     std::size_t operator()(const pos_t& p) const noexcept
@@ -168,7 +171,7 @@ std::vector<pos_t> findPath(const position_t<W, H>& start, const pos_t& goal) no
 
   const auto reconstruct_path = [&](const pos_t& pos) {
     auto p = pos;
-    std::vector<pos_t> total_path;
+    path_t<W,H> total_path;
     total_path.push_back(p);
     while (cameFrom.count(p)) {
       p = cameFrom[p];
