@@ -61,6 +61,7 @@ public:
   robot_t& operator=(const robot_t&) = delete;
   robot_t& operator=(robot_t&&) = delete;
 
+  robot_id id() const noexcept { return _id; }
   ERobotState state() const noexcept { return _state; }
   World::position_t position() const noexcept { return _pos; }
 
@@ -102,6 +103,50 @@ public:
   }
 };
 
+class robot_dispatcher {
+  const World::position_t _start_pos;
+  robot_id _next_id{1u};
+  std::vector<std::unique_ptr<robot_t>> _robots;
+
+public:
+  robot_dispatcher(World::position_t pos)
+      : _start_pos{std::move(pos)} {};
+
+  robot_dispatcher(const robot_dispatcher&) = delete;
+  robot_dispatcher(robot_dispatcher&&) = delete;
+  robot_dispatcher& operator=(const robot_dispatcher&) = delete;
+  robot_dispatcher& operator=(robot_dispatcher&&) = delete;
+
+  bool create_robot() noexcept
+  {
+    _robots.emplace_back(std::make_unique<robot_t>(_next_id++, _start_pos));
+    std::cout << "RobotDispatcher has created robot#" << _robots.back()->id() << '\n';
+    return true;
+  }
+
+  bool send_robot_to(const World::position_t& pos) noexcept
+  {
+    auto idleRobotIt = std::find_if(_robots.cbegin(), _robots.cend(), [](auto& robot) {
+      return robot->state() == ERobotState::Idle;
+    });
+    if (idleRobotIt != _robots.cend()) {
+      auto& r = **idleRobotIt;
+      std::cout << "RobotDispatcher has sent robot#" << r.id() << " to " << pos << '\n';
+      auto path = findPath(r.position(), pos);
+      return r.order(order_move_t{std::move(path)});
+    }
+    std::cout << "RobotDispatcher has no idle robots to send to " << pos << '\n';
+    return false;
+  }
+
+  void tick() noexcept
+  {
+    for (const auto& r : _robots) {
+      r->tick();
+    }
+  }
+};
+
 int main()
 {
   std::cout << KVersion << '\n';
@@ -111,8 +156,9 @@ int main()
   assert(2 == distance(World::position_t{0, 0}, World::position_t{4, 4}));
   assert(1 == distance(World::position_t{0, 0}, World::position_t{4, 0}));
 
-  robot_t robot{1, World::position_t{0, 0}};
-  robot.order(order_move_t{findPath(robot.position(), World::position_t{3, 3})});
+  robot_dispatcher rd{World::position_t{0, 0}};
+  rd.create_robot();
+  rd.send_robot_to(World::position_t{3, 3});
 
   bool quitRequested = false;
   while (!quitRequested) {
@@ -125,9 +171,11 @@ int main()
     //   }
     // }
 
-    robot.tick();
+    rd.tick();
 
     World::sleep();
+
+    rd.send_robot_to(World::position_t{1, 1});
   }
 
   std::cout << "Finish game loop\n"
