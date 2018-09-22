@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.9)
 
 project(Automatique
-  VERSION 0.0.0.1
+  VERSION 0.0.0.2
   DESCRIPTION "Automatic robotic world"
   LANGUAGES CXX
 )
@@ -20,10 +20,12 @@ add_compile_options(-fstrict-aliasing)
 
 set(IMPLEMENTATION_SOURCES
   main.cpp
+  version.cpp
 )
 set(IMPLEMENTATION_HEADERS
+  cxdate.hpp
   cxhash.hpp
-  cxversion.hpp
+  version.h
 )
 
 add_executable(${PROJECT_NAME}

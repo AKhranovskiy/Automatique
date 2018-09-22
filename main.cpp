@@ -1,4 +1,4 @@
-#include "cxversion.hpp"
+#include "version.h"
 #include "cxhash.hpp"
 
 #include <array>
@@ -10,20 +10,6 @@
 #include <unordered_set>
 #include <vector>
 
-
-struct version_t {
-  size_t major{0};
-  size_t minor{0};
-  size_t date{cx::date()};
-  const char* const name{"Automatique"};
-};
-
-std::ostream& operator<<(std::ostream& os, const version_t& v) noexcept
-{
-  return os << v.name << " v" << v.major << '.' << v.minor << '-' << v.date;
-}
-
-constexpr version_t KVersion = {0, 1};
 
 enum class EDirection {
   North,
