@@ -20,22 +20,36 @@ enum class ERobotState {
   Moving,
 };
 
-template <coord_t W, coord_t H>
+struct World {
+  static constexpr const coord_t WIDTH{5u};
+  static constexpr const coord_t HEIGHT{5u};
+
+  static constexpr const std::chrono::milliseconds TICK{200};
+
+  using position_t = position_t<WIDTH, HEIGHT>;
+  using path_t = path_t<WIDTH, HEIGHT>;
+
+  static void sleep() noexcept
+  {
+    std::this_thread::sleep_for(World::TICK);
+  }
+};
+
 struct order_move_t {
-  path_t<W, H> path;
+  World::path_t path;
 };
 
 using robot_id = std::size_t;
-template <coord_t W, coord_t H>
+
 class robot_t {
   const robot_id _id;
-  position_t<W, H> _pos;
+  World::position_t _pos;
 
   ERobotState _state;
-  path_t<W, H> _path;
+  World::path_t _path;
 
 public:
-  robot_t(robot_id id, position_t<W, H> pos) noexcept
+  explicit robot_t(robot_id id, World::position_t pos) noexcept
       : _id{id}
       , _pos{pos}
       , _state{ERobotState::Idle}
@@ -48,9 +62,9 @@ public:
   robot_t& operator=(robot_t&&) = delete;
 
   ERobotState state() const noexcept { return _state; }
-  position_t<W, H> position() const noexcept { return _pos; }
+  World::position_t position() const noexcept { return _pos; }
 
-  bool order(order_move_t<W, H> o) noexcept
+  bool order(order_move_t o) noexcept
   {
     if (o.path.empty()) {
       _state = ERobotState::Idle;
@@ -88,18 +102,6 @@ public:
   }
 };
 
-struct World {
-  static constexpr const coord_t WIDTH{5u};
-  static constexpr const coord_t HEIGHT{5u};
-
-  static constexpr const std::chrono::milliseconds TICK{200};
-
-  using position_t = position_t<WIDTH, HEIGHT>;
-  using path_t = path_t<WIDTH, HEIGHT>;
-  using robot_t = robot_t<WIDTH, HEIGHT>;
-  using order_move_t = order_move_t<WIDTH, HEIGHT>;
-};
-
 int main()
 {
   std::cout << KVersion << '\n';
@@ -109,8 +111,8 @@ int main()
   assert(2 == distance(World::position_t{0, 0}, World::position_t{4, 4}));
   assert(1 == distance(World::position_t{0, 0}, World::position_t{4, 0}));
 
-  World::robot_t robot{1, World::position_t{0, 0}};
-  robot.order(World::order_move_t{findPath(robot.position(), World::position_t{3, 3})});
+  robot_t robot{1, World::position_t{0, 0}};
+  robot.order(order_move_t{findPath(robot.position(), World::position_t{3, 3})});
 
   bool quitRequested = false;
   while (!quitRequested) {
@@ -125,7 +127,7 @@ int main()
 
     robot.tick();
 
-    std::this_thread::sleep_for(World::TICK);
+    World::sleep();
   }
 
   std::cout << "Finish game loop\n"
