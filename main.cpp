@@ -1,6 +1,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
+#include <string>
+
 namespace cx {
 
 template <char ch>
@@ -59,6 +61,21 @@ constexpr version_t KVersion = {0, 1};
 
 int main()
 {
-  std::cout << KVersion << std::endl;
+  std::cout << KVersion << '\n';
+  std::cout << "Start game loop" << std::endl;
+
+  bool quitRequested = false;
+  while (!quitRequested) {
+    while (std::string::traits_type::not_eof(std::cin.peek())) {
+      if (std::cin.get() == 'q') {
+        std::cout << "Quit\n";
+        quitRequested = true;
+        break;
+      }
+    }
+  }
+
+  std::cout << "Finish game loop\n"
+            << std::endl;
   return 0;
 }
