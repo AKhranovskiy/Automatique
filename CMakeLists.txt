@@ -22,6 +22,7 @@ set(IMPLEMENTATION_SOURCES
   main.cpp
 )
 set(IMPLEMENTATION_HEADERS
+  cxversion.hpp
 )
 
 add_executable(${PROJECT_NAME}
