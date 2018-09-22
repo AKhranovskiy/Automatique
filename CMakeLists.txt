@@ -22,6 +22,7 @@ set(IMPLEMENTATION_SOURCES
   main.cpp
 )
 set(IMPLEMENTATION_HEADERS
+  cxhash.hpp
   cxversion.hpp
 )
 
