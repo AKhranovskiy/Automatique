@@ -25,6 +25,7 @@ set(IMPLEMENTATION_SOURCES
 set(IMPLEMENTATION_HEADERS
   cxdate.hpp
   cxhash.hpp
+  position.hpp
   version.h
 )
 
