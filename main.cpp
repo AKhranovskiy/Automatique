@@ -59,6 +59,46 @@ std::ostream& operator<<(std::ostream& os, const version_t& v) noexcept
 
 constexpr version_t KVersion = {0, 1};
 
+enum class EDirection {
+  North,
+  East,
+  South,
+  West
+};
+
+using coord_t = size_t;
+
+template <coord_t W, coord_t H>
+struct position_t {
+  coord_t x{0};
+  coord_t y{0};
+
+  explicit position_t(coord_t x, coord_t y) noexcept
+      : x{x % W}
+      , y{y % H}
+  {
+  }
+
+  position_t move(EDirection dir) const noexcept
+  {
+    switch (dir) {
+    case EDirection::North:
+      return {x, y > 0 ? y - 1 : H - 1};
+    case EDirection::East:
+      return {x + 1, y};
+    case EDirection::South:
+      return {x, y + 1};
+    case EDirection::West:
+      return {x > 0 ? x - 1 : W - 1};
+    }
+  }
+};
+
+template <coord_t W, coord_t H>
+struct world_t {
+  using position_t = position_t<W, H>;
+};
+
 int main()
 {
   std::cout << KVersion << '\n';
