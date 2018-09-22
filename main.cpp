@@ -126,11 +126,32 @@ public:
 
   bool send_robot_to(const World::position_t& pos) noexcept
   {
-    auto idleRobotIt = std::find_if(_robots.cbegin(), _robots.cend(), [](auto& robot) {
-      return robot->state() == ERobotState::Idle;
-    });
-    if (idleRobotIt != _robots.cend()) {
-      auto& r = **idleRobotIt;
+    if (_robots.empty()) {
+      std::cout << "RobotDispatcher has no robots to order\n";
+      return false;
+    }
+
+    auto closestIdleRobot = _robots.cend();
+    distance_t min_d = std::numeric_limits<distance_t>::max();
+
+    auto it = _robots.cbegin();
+    const auto is_idle = [](auto& robot) { return robot->state() == ERobotState::Idle; };
+
+    while ((it = std::find_if(it, _robots.cend(), is_idle)) != _robots.cend()) {
+      auto d = distance((**it).position(), pos);
+      if (d < min_d) {
+        min_d = d;
+        closestIdleRobot = it;
+      }
+      ++it;
+    }
+
+    if (closestIdleRobot != _robots.cend()) {
+      auto& r = **closestIdleRobot;
+      if (min_d == 0) {
+        std::cout << "RobotDispatcher has found an idle robot#" << r.id() << " at " << pos << '\n';
+        return true;
+      }
       std::cout << "RobotDispatcher has sent robot#" << r.id() << " to " << pos << '\n';
       auto path = findPath(r.position(), pos);
       return r.order(order_move_t{std::move(path)});
@@ -158,18 +179,11 @@ int main()
 
   robot_dispatcher rd{World::position_t{0, 0}};
   rd.create_robot();
+  rd.create_robot();
   rd.send_robot_to(World::position_t{3, 3});
 
   bool quitRequested = false;
   while (!quitRequested) {
-    // while (std::string::traits_type::not_eof(std::cin.peek())) {
-    //   std::cout << (uint32_t)std::cin.peek();
-    //   if (std::cin.get() == 'q') {
-    //     std::cout << "Quit\n";
-    //     quitRequested = true;
-    //     break;
-    //   }
-    // }
 
     rd.tick();
 
