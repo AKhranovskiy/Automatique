@@ -27,6 +27,8 @@ set(IMPLEMENTATION_HEADERS
   cxhash.hpp
   position.hpp
   version.h
+  world.h
+  command.h
 )
 
 add_executable(${PROJECT_NAME}

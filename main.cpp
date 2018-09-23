@@ -1,14 +1,9 @@
+#include "command.h"
 #include "cxhash.hpp"
-#include "position.hpp"
 #include "version.h"
+#include "world.h"
 
-#include <chrono>
-#include <cstdio>
-#include <cstdlib>
-#include <future>
 #include <iostream>
-#include <string>
-#include <thread>
 
 template <coord_t W, coord_t H>
 std::ostream& operator<<(std::ostream& os, const position_t<W, H>& pos)
@@ -21,34 +16,9 @@ enum class ERobotState {
   Moving,
 };
 
-struct World {
-  static constexpr const coord_t WIDTH{5u};
-  static constexpr const coord_t HEIGHT{5u};
-
-  using position_t = position_t<WIDTH, HEIGHT>;
-  using path_t = path_t<WIDTH, HEIGHT>;
-};
-
 struct command_move_t {
   World::path_t path;
 };
-
-// Result of command execution
-using command_t = std::promise<bool>;
-using result_t = decltype(std::declval<command_t>().get_future());
-
-inline bool is_command_done(const result_t& result) noexcept
-{
-  constexpr const auto no_wait = std::chrono::milliseconds{0};
-  return result.valid() && result.wait_for(no_wait) == std::future_status::ready;
-}
-
-result_t make_result(bool value) noexcept
-{
-  command_t t;
-  t.set_value(value);
-  return t.get_future();
-}
 
 using robot_id = std::size_t;
 

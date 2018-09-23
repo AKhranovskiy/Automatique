@@ -78,6 +78,14 @@ constexpr pos_t move(const position_t<W, H>& pos, EDirection dir) noexcept
   }
 }
 
+template <coord_t W, coord_t H>
+struct position_hash {
+  std::size_t operator()(const position_t<W, H>& p) const noexcept
+  {
+    return cx::FNVhash(p.x, p.y);
+  }
+};
+
 using distance_t = decltype(std::declval<coord_t>() * std::declval<coord_t>());
 
 template <coord_t W, coord_t H, typename pos_t = position_t<W, H>>
@@ -102,22 +110,17 @@ constexpr std::array<position_t<W, H>, 4> neighborhs(const position_t<W, H>& pos
       move(pos, EDirection::West)};
 }
 
-template<coord_t W, coord_t H>
-using path_t = std::vector<position_t<W,H>>;
+template <coord_t W, coord_t H>
+using path_t = std::vector<position_t<W, H>>;
 
 template <coord_t W, coord_t H, typename pos_t = position_t<W, H>>
-path_t<W,H> findPath(const position_t<W, H>& start, const pos_t& goal) noexcept
+path_t<W, H> findPath(const position_t<W, H>& start, const pos_t& goal) noexcept
 {
-  struct Hash {
-    std::size_t operator()(const pos_t& p) const noexcept
-    {
-      return cx::FNVhash(p.x, p.y);
-    }
-  };
+  using position_hash_t = position_hash<W, H>;
 
-  using set_t = std::unordered_set<pos_t, Hash>;
-  using score_map_t = std::unordered_map<pos_t, distance_t, Hash>;
-  using came_from_map_t = std::unordered_map<pos_t, pos_t, Hash>;
+  using set_t = std::unordered_set<pos_t, position_hash_t>;
+  using score_map_t = std::unordered_map<pos_t, distance_t, position_hash_t>;
+  using came_from_map_t = std::unordered_map<pos_t, pos_t, position_hash_t>;
 
   const auto Inf = W * W + H * H + 1;
 
@@ -171,7 +174,7 @@ path_t<W,H> findPath(const position_t<W, H>& start, const pos_t& goal) noexcept
 
   const auto reconstruct_path = [&](const pos_t& pos) {
     auto p = pos;
-    path_t<W,H> total_path;
+    path_t<W, H> total_path;
     total_path.push_back(p);
     while (cameFrom.count(p)) {
       p = cameFrom[p];
