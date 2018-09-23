@@ -25,34 +25,27 @@ struct World {
   static constexpr const coord_t WIDTH{5u};
   static constexpr const coord_t HEIGHT{5u};
 
-  static constexpr const std::chrono::milliseconds TICK{200};
-
   using position_t = position_t<WIDTH, HEIGHT>;
   using path_t = path_t<WIDTH, HEIGHT>;
-
-  static void sleep() noexcept
-  {
-    std::this_thread::sleep_for(World::TICK);
-  }
 };
 
-struct order_move_t {
+struct command_move_t {
   World::path_t path;
 };
 
-// Result of order execution
-using task_t = std::promise<bool>;
-using order_t = decltype(std::declval<task_t>().get_future());
+// Result of command execution
+using command_t = std::promise<bool>;
+using result_t = decltype(std::declval<command_t>().get_future());
 
-inline bool is_order_done(const order_t& order) noexcept
+inline bool is_command_done(const result_t& result) noexcept
 {
   constexpr const auto no_wait = std::chrono::milliseconds{0};
-  return order.valid() && order.wait_for(no_wait) == std::future_status::ready;
+  return result.valid() && result.wait_for(no_wait) == std::future_status::ready;
 }
 
-order_t make_ready_order(bool value) noexcept
+result_t make_result(bool value) noexcept
 {
-  task_t t;
+  command_t t;
   t.set_value(value);
   return t.get_future();
 }
@@ -66,7 +59,7 @@ class robot_t {
   ERobotState _state;
   World::path_t _path;
 
-  task_t _task;
+  command_t _command;
 
 public:
   explicit robot_t(robot_id id, World::position_t pos) noexcept
@@ -85,36 +78,36 @@ public:
   ERobotState state() const noexcept { return _state; }
   World::position_t position() const noexcept { return _pos; }
 
-  order_t order(order_move_t o) noexcept
+  result_t command(command_move_t o) noexcept
   {
-    std::cout << "Robot#1 has received order MOVE-TO: ";
+    std::cout << "Robot#1 has received command MOVE-TO: ";
     if (_state != ERobotState::Idle) {
       std::cout << "rejected, is moving\n";
-      return make_ready_order(false);
+      return make_result(false);
     }
     if (o.path.empty()) {
       _state = ERobotState::Idle;
 
       std::cout << "done, empty path\n";
-      return make_ready_order(true);
+      return make_result(true);
     }
     if (_pos != o.path.back()) {
       std::cout << "rejected, wrong start position\n";
-      return make_ready_order(false);
+      return make_result(false);
     }
 
     o.path.pop_back();
     if (o.path.empty()) {
       _state = ERobotState::Idle;
       std::cout << "done, arrived\n";
-      return make_ready_order(true);
+      return make_result(true);
     }
     _path = std::move(o.path);
     _state = ERobotState::Moving;
 
     std::cout << "accepted, is moving\n";
-    _task = task_t{};
-    return _task.get_future();
+    _command = command_t{};
+    return _command.get_future();
   }
 
   bool tick() noexcept
@@ -130,7 +123,7 @@ public:
         _state = ERobotState::Idle;
 
         std::cout << "Robot#" << _id << " has arrived\n";
-        _task.set_value(true);
+        _command.set_value(true);
       }
 
       return true;
@@ -159,11 +152,11 @@ public:
     return true;
   }
 
-  order_t send_robot_to(const World::position_t& pos) noexcept
+  result_t send_robot_to(const World::position_t& pos) noexcept
   {
     if (_robots.empty()) {
-      std::cout << "RobotDispatcher has no robots to order\n";
-      return make_ready_order(false);
+      std::cout << "RobotDispatcher has no robots to command\n";
+      return make_result(false);
     }
 
     auto closestIdleRobot = _robots.cend();
@@ -185,14 +178,14 @@ public:
       auto& r = **closestIdleRobot;
       if (min_d == 0) {
         std::cout << "RobotDispatcher has found an idle robot#" << r.id() << " at " << pos << '\n';
-        return make_ready_order(true);
+        return make_result(true);
       }
       std::cout << "RobotDispatcher has sent robot#" << r.id() << " to " << pos << '\n';
       auto path = findPath(r.position(), pos);
-      return r.order(order_move_t{std::move(path)});
+      return r.command(command_move_t{std::move(path)});
     }
     std::cout << "RobotDispatcher has no idle robots to send to " << pos << '\n';
-    return make_ready_order(false);
+    return make_result(false);
   }
 
   void tick() noexcept
@@ -218,7 +211,7 @@ int main()
   auto r1 = rd.send_robot_to(World::position_t{3, 3});
   auto r2 = rd.send_robot_to(World::position_t{1, 1});
 
-  while (!is_order_done(r1) || !is_order_done(r2)) {
+  while (!is_command_done(r1) || !is_command_done(r2)) {
     rd.tick();
   }
 
