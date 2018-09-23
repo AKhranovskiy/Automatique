@@ -3,6 +3,7 @@
 #include "position.hpp"
 
 enum class ETileContent {
+  Unknown,
   None,
   Coal,
   Ore,
