@@ -1,17 +1,12 @@
 #include "command.h"
 #include "cxhash.hpp"
+#include "pretty_print.hpp"
 #include "version.h"
 #include "world.h"
 
 #include <iostream>
 #include <thread>
 #include <variant>
-
-template <coord_t W, coord_t H>
-std::ostream& operator<<(std::ostream& os, const position_t<W, H>& pos)
-{
-  return (os << '(' << pos.x << ',' << pos.y << ')');
-}
 
 enum class ERobotState {
   Idle,
@@ -21,8 +16,7 @@ enum class ERobotState {
 struct command_move_t {
   World::path_t path;
 };
-struct command_stop_t {
-};
+struct command_stop_t {};
 
 using robot_id = std::size_t;
 
@@ -37,11 +31,7 @@ class robot_t {
 
 public:
   explicit robot_t(robot_id id, World::position_t pos) noexcept
-      : _id{id}
-      , _pos{pos}
-      , _state{ERobotState::Idle}
-  {
-  }
+      : _id{id}, _pos{pos}, _state{ERobotState::Idle} {}
 
   robot_t(const robot_t&) = delete;
   robot_t(robot_t&&) = delete;
@@ -52,8 +42,7 @@ public:
   ERobotState state() const noexcept { return _state; }
   World::position_t position() const noexcept { return _pos; }
 
-  result_t command(command_move_t o) noexcept
-  {
+  result_t command(command_move_t o) noexcept {
     std::cout << "Robot#" << _id << " has received command MOVE-TO: ";
     if (_state != ERobotState::Idle) {
       std::cout << "rejected, is moving\n";
@@ -84,8 +73,7 @@ public:
     return _command.get_future();
   }
 
-  result_t command(command_stop_t) noexcept
-  {
+  result_t command(command_stop_t) noexcept {
     std::cout << "Robot#" << _id << " has received command STOP: ";
     switch (_state) {
     case ERobotState::Idle:
@@ -101,8 +89,7 @@ public:
     }
   }
 
-  bool tick() noexcept
-  {
+  bool tick() noexcept {
     switch (_state) {
     case ERobotState::Idle:
       return true;
@@ -126,41 +113,30 @@ class profile_none {
   robot_t& _robot;
 
 public:
-  explicit profile_none(robot_t& robot) noexcept
-      : _robot(robot)
-  {
-  }
+  explicit profile_none(robot_t& robot) noexcept : _robot(robot) {}
 
   profile_none(const profile_none&) = delete;
   profile_none(profile_none&&) = default;
   profile_none& operator=(const profile_none&) = delete;
   profile_none& operator=(profile_none&&) = default;
 
-  bool tick() noexcept
-  {
-    return _robot.tick();
-  }
+  bool tick() noexcept { return _robot.tick(); }
 };
 
-struct command_discover_t {
-};
+struct command_discover_t {};
 
 class profile_scout {
   robot_t& _robot;
 
 public:
-  explicit profile_scout(robot_t& robot) noexcept
-      : _robot(robot)
-  {
-  }
+  explicit profile_scout(robot_t& robot) noexcept : _robot(robot) {}
 
   profile_scout(const profile_scout&) = delete;
   profile_scout(profile_scout&&) = default;
   profile_scout& operator=(const profile_scout&) = delete;
   profile_scout& operator=(profile_scout&&) = default;
 
-  result_t command(command_discover_t) noexcept
-  {
+  result_t command(command_discover_t) noexcept {
     std::cout << "Scout#" << _robot.id() << " received command DISCOVER: ";
     std::cout << "\n\tsearching for UNKNOWN area around " << _robot.position();
 
@@ -174,21 +150,16 @@ public:
     auto path = findPath(pos, target);
 
     auto moving = _robot.command(command_move_t{std::move(path)});
-    //return combine_result(moving, command(command_analyze_t{}));
+    // return combine_result(moving, command(command_analyze_t{}));
     return moving;
   }
 
-  bool tick() noexcept
-  {
-    return _robot.tick();
-  }
+  bool tick() noexcept { return _robot.tick(); }
 
-  World::position_t find_unknown(const World::position_t& pos) const noexcept
-  {
+  World::position_t find_unknown(const World::position_t& pos) const noexcept {
     const auto mv = [](const auto& pos, EDirection dir, size_t steps) {
       auto p = pos;
-      for (auto i = 0u; i < steps; ++i)
-        p = move(p, dir);
+      for (auto i = 0u; i < steps; ++i) p = move(p, dir);
       return p;
     };
 
@@ -224,25 +195,20 @@ class robot_dispatcher {
     profile_variant_t profile;
 
     profiled_robot(std::unique_ptr<robot_t>&& r, profile_variant_t&& p) noexcept
-        : robot{std::move(r)}
-        , profile{std::move(p)}
-    {
-    }
+        : robot{std::move(r)}, profile{std::move(p)} {}
   };
 
   std::unordered_map<robot_id, profiled_robot> _robots;
 
 public:
-  robot_dispatcher(World::position_t pos)
-      : _start_pos{std::move(pos)} {};
+  explicit robot_dispatcher(World::position_t pos) : _start_pos{pos} {};
 
   robot_dispatcher(const robot_dispatcher&) = delete;
   robot_dispatcher(robot_dispatcher&&) = delete;
   robot_dispatcher& operator=(const robot_dispatcher&) = delete;
   robot_dispatcher& operator=(robot_dispatcher&&) = delete;
 
-  bool create_robot() noexcept
-  {
+  bool create_robot() noexcept {
     const auto id = _next_id++;
 
     auto robot = std::make_unique<robot_t>(id, _start_pos);
@@ -255,8 +221,7 @@ public:
     return ok;
   }
 
-  result_t discover() noexcept
-  {
+  result_t discover() noexcept {
     // Find idle robot
 
     if (_robots.empty()) {
@@ -266,8 +231,8 @@ public:
 
     const auto is_idle_scout = [](const auto& kv) {
       const auto& [id, r] = kv;
-      return std::holds_alternative<profile_scout>(r.profile)
-          && r.robot->state() == ERobotState::Idle;
+      return std::holds_alternative<profile_scout>(r.profile) &&
+             r.robot->state() == ERobotState::Idle;
     };
 
     auto idleScout = std::find_if(_robots.begin(), _robots.end(), is_idle_scout);
@@ -297,8 +262,7 @@ public:
     return make_result(false);
   }
 
-  result_t send_robot_to(const World::position_t& pos) noexcept
-  {
+  result_t send_robot_to(const World::position_t& pos) noexcept {
     if (_robots.empty()) {
       std::cout << "RobotDispatcher has no robots to command\n";
       return make_result(false);
@@ -340,48 +304,71 @@ public:
     return make_result(false);
   }
 
-  result_t stop()
-  {
+  result_t stop() {
     for (auto& [id, r] : _robots) {
       r.robot->command(command_stop_t{});
     }
     return make_result(true);
   }
-  void tick() noexcept
-  {
+  void tick() noexcept {
     for (auto& [id, r] : _robots) {
       std::visit([](auto&& profile) { profile.tick(); }, r.profile);
     }
   }
 };
 
-int main()
-{
+int main() {
   std::cout << KVersion << '\n';
   std::cout << "Start game loop" << std::endl;
 
-  assert(2 == distance(World::position_t{0, 0}, World::position_t{1, 1}));
-  assert(2 == distance(World::position_t{0, 0}, World::position_t{4, 4}));
-  assert(1 == distance(World::position_t{0, 0}, World::position_t{4, 0}));
+  auto pa = std::packaged_task<int(int)>{[](int v) { return v; }};
+  auto fa = pa.get_future();
+  auto pb = std::packaged_task<int(int)>{[](int v) { return v; }};
+  auto fb = pb.get_future();
+  auto pc = std::packaged_task<int(int)>{[](int v) { return v; }};
+  auto fc = pc.get_future();
+  auto pd = std::packaged_task<int(int)>{[](int v) { return v; }};
+  auto fd = pd.get_future();
+  // auto cmb = (pa.get_future() || pb.get_future()) && (pc.get_future() || pd.get_future());
 
-  robot_dispatcher rd{World::position_t{0, 0}};
-  rd.create_robot();
-  rd.create_robot();
-  auto r1 = rd.send_robot_to(World::position_t{3, 3});
-  auto r2 = rd.send_robot_to(World::position_t{1, 1});
+  // auto cmb = (fa || fb) && (fc || fd);
+  auto cmb = (fa || std::move(fb)) && (fc || std::move(fd));
 
-  while (!is_command_done(r1) && !is_command_done(r2)) {
-    rd.tick();
-  }
+  std::cout << "state: " << !!cmb << '\n';
+  pa(2);
+  std::cout << "state: " << !!cmb << '\n';
+  pb(4);
+  pc(5);
+  std::cout << "fa: " << fa.valid() << '\n';
+  std::cout << "fb: " << fb.valid() << '\n';
+  std::cout << "fc: " << fc.valid() << '\n';
+  std::cout << "fd: " << fd.valid() << '\n';
+  // std::cout << "values: " << fa.get() << "," << fb.get() << '\n';
+  std::cout << "state: " << !!cmb << '\n';
 
-  auto discovery = rd.discover();
-  while (!is_command_done(discovery)) {
-    rd.tick();
-  }
+  std::cout << "result: " << cmb.get() << '\n';
+  //
+  //  assert(2 == distance(World::position_t{0, 0}, World::position_t{1, 1}));
+  //  assert(2 == distance(World::position_t{0, 0}, World::position_t{4, 4}));
+  //  assert(1 == distance(World::position_t{0, 0}, World::position_t{4, 0}));
+  //
+  //  robot_dispatcher rd{World::position_t{0, 0}};
+  //  rd.create_robot();
+  //  rd.create_robot();
+  //  auto r1 = rd.send_robot_to(World::position_t{3, 3});
+  //  auto r2 = rd.send_robot_to(World::position_t{1, 1});
+  //
+  //  while (!is_command_done(r1) && !is_command_done(r2)) {
+  //    rd.tick();
+  //  }
+  //
+  //  auto discovery = rd.discover();
+  //  while (!is_command_done(discovery)) {
+  //    rd.tick();
+  //  }
+  //
+  //  std::cout << "Discovery " << discovery.get() << '\n';
 
-  std::cout << "Discovery " << discovery.get() << '\n';
-
-  std::cout << "Finish game loop\n"
-            << std::endl;
+  std::cout << "Finish game loop\n" << std::endl;
   return 0;
 }

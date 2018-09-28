@@ -23,12 +23,14 @@ set(IMPLEMENTATION_SOURCES
   version.cpp
 )
 set(IMPLEMENTATION_HEADERS
+  command.h
   cxdate.hpp
   cxhash.hpp
+  future_combine.hpp
   position.hpp
+  pretty_print.hpp
   version.h
   world.h
-  command.h
 )
 
 add_executable(${PROJECT_NAME}

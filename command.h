@@ -1,20 +1,16 @@
 #pragma once
 
-#include <chrono>
+#include "future_combine.hpp"
+
 #include <future>
 #include <utility>
 
 using command_t = std::promise<bool>;
 using result_t = decltype(std::declval<command_t>().get_future());
 
-inline bool is_command_done(const result_t& result) noexcept
-{
-  constexpr const auto no_wait = std::chrono::milliseconds{0};
-  return result.valid() && result.wait_for(no_wait) == std::future_status::ready;
-}
+inline bool is_command_done(const result_t& result) noexcept { return is_future_ready(result); }
 
-result_t make_result(bool value) noexcept
-{
+inline result_t make_result(bool value) {
   command_t t;
   t.set_value(value);
   return t.get_future();

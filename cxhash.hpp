@@ -5,9 +5,7 @@
 
 namespace cx {
 
-template <std::size_t N>
-constexpr std::uint64_t FNVhash(const std::uint8_t (&data)[N])
-{
+template <std::size_t N> constexpr std::uint64_t FNVhash(const std::uint8_t (&data)[N]) {
   constexpr std::uint64_t basis = 0xcbf29ce484222325;
   constexpr std::uint64_t prime = 0x100000001b3;
   std::uint64_t hash = basis;
@@ -18,9 +16,7 @@ constexpr std::uint64_t FNVhash(const std::uint8_t (&data)[N])
   return hash;
 }
 
-template <typename T>
-constexpr std::uint64_t FNVhash(T a, T b)
-{
+template <typename T> constexpr std::uint64_t FNVhash(T a, T b) {
   typedef std::uint8_t(data_t)[sizeof(T) * 2];
 
   const T buf[2] = {a, b};

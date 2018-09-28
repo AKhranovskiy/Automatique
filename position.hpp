@@ -10,17 +10,11 @@
 #include <utility>
 #include <vector>
 
-enum class EDirection {
-  North,
-  East,
-  South,
-  West
-};
+enum class EDirection { North, East, South, West };
 
 using coord_t = std::size_t;
 
-template <coord_t W, coord_t H>
-struct position_t {
+template <coord_t W, coord_t H> struct position_t {
   static_assert(W > 2, "Width is too small");
   static_assert(H > 2, "Height is too small");
 
@@ -31,11 +25,7 @@ struct position_t {
   constexpr position_t(const position_t& pos) noexcept = default;
   constexpr position_t(position_t&& pos) noexcept = default;
 
-  constexpr position_t(coord_t x, coord_t y) noexcept
-      : x{x % W}
-      , y{y % H}
-  {
-  }
+  constexpr position_t(coord_t x, coord_t y) noexcept : x{x % W}, y{y % H} {}
 
   constexpr position_t& operator=(const position_t& pos) noexcept = default;
   constexpr position_t& operator=(position_t&& pos) noexcept = default;
@@ -43,29 +33,24 @@ struct position_t {
 
 // TODO Spaceship operator?
 template <coord_t W, coord_t H, typename pos_t = position_t<W, H>>
-constexpr bool operator==(const position_t<W, H>& lhs, const pos_t& rhs) noexcept
-{
+constexpr bool operator==(const position_t<W, H>& lhs, const pos_t& rhs) noexcept {
   return lhs.x == rhs.x && lhs.y == rhs.y;
 }
 template <coord_t W, coord_t H, typename pos_t = position_t<W, H>>
-constexpr bool operator!=(const position_t<W, H>& lhs, const pos_t& rhs) noexcept
-{
+constexpr bool operator!=(const position_t<W, H>& lhs, const pos_t& rhs) noexcept {
   return !(lhs == rhs);
 }
 template <coord_t W, coord_t H, typename pos_t = position_t<W, H>>
-constexpr bool operator<(const position_t<W, H>& lhs, const pos_t& rhs) noexcept
-{
+constexpr bool operator<(const position_t<W, H>& lhs, const pos_t& rhs) noexcept {
   return lhs.x < rhs.x && lhs.y < rhs.y;
 }
 template <coord_t W, coord_t H, typename pos_t = position_t<W, H>>
-constexpr bool operator>(const position_t<W, H>& lhs, const pos_t& rhs) noexcept
-{
+constexpr bool operator>(const position_t<W, H>& lhs, const pos_t& rhs) noexcept {
   return lhs.x > rhs.x && lhs.y > rhs.y;
 }
 
 template <coord_t W, coord_t H, typename pos_t = position_t<W, H>>
-constexpr pos_t move(const position_t<W, H>& pos, EDirection dir) noexcept
-{
+constexpr pos_t move(const position_t<W, H>& pos, EDirection dir) noexcept {
   switch (dir) {
   case EDirection::North:
     return {pos.x, pos.y > 0 ? pos.y - 1 : H - 1};
@@ -78,22 +63,15 @@ constexpr pos_t move(const position_t<W, H>& pos, EDirection dir) noexcept
   }
 }
 
-template <coord_t W, coord_t H>
-struct position_hash {
-  std::size_t operator()(const position_t<W, H>& p) const noexcept
-  {
-    return cx::FNVhash(p.x, p.y);
-  }
+template <coord_t W, coord_t H> struct position_hash {
+  std::size_t operator()(const position_t<W, H>& p) const noexcept { return cx::FNVhash(p.x, p.y); }
 };
 
 using distance_t = decltype(std::declval<coord_t>() * std::declval<coord_t>());
 
 template <coord_t W, coord_t H, typename pos_t = position_t<W, H>>
-constexpr distance_t distance(const position_t<W, H>& from, const pos_t& to) noexcept
-{
-  const auto dst = [](auto a, auto b) {
-    return a > b ? a - b : b - a;
-  };
+constexpr distance_t distance(const position_t<W, H>& from, const pos_t& to) noexcept {
+  const auto dst = [](auto a, auto b) { return a > b ? a - b : b - a; };
 
   auto dx = std::min(dst(from.x, to.x), dst(from.x + W, to.x));
   auto dy = std::min(dst(from.y, to.y), dst(from.y + H, to.y));
@@ -101,21 +79,15 @@ constexpr distance_t distance(const position_t<W, H>& from, const pos_t& to) noe
 }
 
 template <coord_t W, coord_t H>
-constexpr std::array<position_t<W, H>, 4> neighborhs(const position_t<W, H>& pos) noexcept
-{
-  return {
-      move(pos, EDirection::North),
-      move(pos, EDirection::East),
-      move(pos, EDirection::South),
-      move(pos, EDirection::West)};
+constexpr std::array<position_t<W, H>, 4> neighborhs(const position_t<W, H>& pos) noexcept {
+  return {move(pos, EDirection::North), move(pos, EDirection::East), move(pos, EDirection::South),
+          move(pos, EDirection::West)};
 }
 
-template <coord_t W, coord_t H>
-using path_t = std::vector<position_t<W, H>>;
+template <coord_t W, coord_t H> using path_t = std::vector<position_t<W, H>>;
 
 template <coord_t W, coord_t H, typename pos_t = position_t<W, H>>
-path_t<W, H> findPath(const position_t<W, H>& start, const pos_t& goal) noexcept
-{
+path_t<W, H> findPath(const position_t<W, H>& start, const pos_t& goal) noexcept {
   using position_hash_t = position_hash<W, H>;
 
   using set_t = std::unordered_set<pos_t, position_hash_t>;

@@ -14,4 +14,3 @@ struct version_t {
 static const version_t KVersion = {0, 1, cx::date(), "Automatique"};
 
 std::ostream& operator<<(std::ostream& os, const version_t& v) noexcept;
-

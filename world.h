@@ -7,7 +7,7 @@ enum class ETileContent {
   None,
   Coal,
   Ore,
-  Water
+  Water,
 };
 
 struct World {
