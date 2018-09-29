@@ -19,17 +19,23 @@ add_compile_options(-Wfloat-equal)
 add_compile_options(-fstrict-aliasing)
 
 set(IMPLEMENTATION_SOURCES
+  commands.cpp
   main.cpp
+  pretty_print.cpp
+  robot.cpp
   version.cpp
+  world.cpp
 )
 set(IMPLEMENTATION_HEADERS
-  command.h
+  commands.h
   cxdate.hpp
   cxhash.hpp
   future_combine.hpp
   future_utils.hpp
+  operation.hpp
   position.hpp
   pretty_print.hpp
+  robot.h
   variant_utils.hpp
   version.h
   world.h

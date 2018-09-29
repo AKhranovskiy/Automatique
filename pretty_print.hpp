@@ -1,6 +1,7 @@
 #pragma once
 
 #include "position.hpp"
+#include "commands.h"
 
 #include <optional>
 #include <ostream>
@@ -10,6 +11,8 @@ template <coord_t W, coord_t H>
 std::ostream& operator<<(std::ostream& os, const position_t<W, H>& pos) {
   return (os << '(' << pos.x << ',' << pos.y << ')');
 }
+
+std::ostream& operator<<(std::ostream& os, command_move_t::EResult r) noexcept;
 
 template <class T> std::ostream& operator<<(std::ostream& os, const std::optional<T>& o) {
   if (o) {

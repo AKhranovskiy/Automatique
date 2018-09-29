@@ -21,5 +21,3 @@ struct World {
   using tiles_t = std::unordered_map<position_t, ETileContent, position_hash_t>;
   static tiles_t Tiles;
 };
-
-World::tiles_t World::Tiles{};

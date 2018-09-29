@@ -4,6 +4,7 @@
 #include <future>
 #include <optional>
 
+namespace future_utils {
 template <class R> inline bool is_future_ready(const std::future<R>& f) noexcept {
   constexpr const auto no_wait = std::chrono::milliseconds{0};
   return f.valid() && f.wait_for(no_wait) == std::future_status::ready;
@@ -29,14 +30,15 @@ template <class R> std::future<R> make_ready_future(R&& r) noexcept {
   }
 }
 
-std::future<void> make_ready_future() noexcept {
-  try {
-    std::promise<void> p;
-    p.set_value();
-    return p.get_future();
-  } catch (const std::future_error&) {
-    return {};
-  } catch (const std::exception&) {
-    return {};
-  }
-}
+//std::future<void> make_ready_future() noexcept {
+//  try {
+//    std::promise<void> p;
+//    p.set_value();
+//    return p.get_future();
+//  } catch (const std::future_error&) {
+//    return {};
+//  } catch (const std::exception&) {
+//    return {};
+//  }
+//}
+} // namespace future_utils
