@@ -1,17 +1,10 @@
 #pragma once
 
+#include "future_utils.hpp"
+
 #include <future>
 #include <optional>
 #include <tuple>
-
-template <class R> inline bool is_future_ready(const std::future<R>& f) noexcept {
-  constexpr const auto no_wait = std::chrono::milliseconds{0};
-  return f.valid() && f.wait_for(no_wait) == std::future_status::ready;
-}
-
-template <class R> inline std::optional<R> get_result(std::future<R>&& f) noexcept {
-  return is_future_ready(f) ? std::make_optional(f.get()) : std::nullopt;
-}
 
 template <class T> auto fwd(T&& t) { return std::forward<std::decay_t<T>>(t); }
 

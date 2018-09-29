@@ -27,6 +27,7 @@ set(IMPLEMENTATION_HEADERS
   cxdate.hpp
   cxhash.hpp
   future_combine.hpp
+  future_utils.hpp
   position.hpp
   pretty_print.hpp
   variant_utils.hpp
