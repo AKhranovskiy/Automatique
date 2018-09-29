@@ -29,6 +29,7 @@ set(IMPLEMENTATION_HEADERS
   future_combine.hpp
   position.hpp
   pretty_print.hpp
+  variant_utils.hpp
   version.h
   world.h
 )
