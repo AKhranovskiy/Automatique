@@ -5,11 +5,8 @@
 namespace cx {
 
 template <char ch> constexpr std::size_t to_num() noexcept {
-  if constexpr (ch == ' ') {
-    return 0u;
-  }
-  static_assert('0' <= ch && ch <= '9', "Character is not a number");
-  return ch - '0';
+  static_assert((ch == ' ') || ('0' <= ch && ch <= '9'), "Character is not a number");
+  return (ch == ' ') ? 0u : (ch - '0');
 }
 
 constexpr std::size_t year() noexcept {
@@ -20,6 +17,7 @@ constexpr std::size_t year() noexcept {
 template <char a, char b, char c> struct month_t;
 
 template <> struct month_t<'S', 'e', 'p'> { static const std::size_t id = 9u; };
+template <> struct month_t<'O', 'c', 't'> { static const std::size_t id = 10u; };
 // TODO add other months later...
 
 constexpr std::size_t month() noexcept {
