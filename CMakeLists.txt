@@ -19,7 +19,6 @@ add_compile_options(-Wfloat-equal)
 add_compile_options(-fstrict-aliasing)
 
 set(IMPLEMENTATION_SOURCES
-  main.cpp
   pretty_print.cpp
   traits.cpp
   version.cpp
@@ -33,6 +32,7 @@ set(IMPLEMENTATION_HEADERS
   future_combine.hpp
   future_utils.hpp
   operation.h
+  operation_queue.hpp
   position.hpp
   pretty_print.hpp
   traits.h
@@ -42,7 +42,20 @@ set(IMPLEMENTATION_HEADERS
   world.h
 )
 
-add_executable(${PROJECT_NAME}
+add_library(${PROJECT_NAME} STATIC
   ${IMPLEMENTATION_SOURCES}
   ${IMPLEMENTATION_HEADERS}
 )
+target_include_directories(${PROJECT_NAME} PUBLIC .)
+
+add_executable(${PROJECT_NAME}.app EXCLUDE_FROM_ALL main.cpp)
+target_link_libraries(${PROJECT_NAME}.app PRIVATE ${PROJECT_NAME})
+
+# set(CATCH_BUILD_TESTING OFF CACHE "No self test")
+# set(CATCH_INSTALL_DOCS OFF CACHE "No docs")
+# set(CATCH_INSTALL_HELPERS OFF "No helpers")
+
+add_subdirectory(Catch2)
+add_subdirectory(tests)
+
+
