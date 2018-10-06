@@ -1,16 +1,6 @@
 #include "pretty_print.hpp"
+#include "unit.h"
 
-std::ostream& operator<<(std::ostream& os, command_move_t::EResult r) noexcept {
-  switch (r) {
-  case command_move_t::EResult::Ok:
-    return os << "Ok";
-  case command_move_t::EResult::NotSupported:
-    return os << "NotSupported";
-  case command_move_t::EResult::Busy:
-    return os << "Busy";
-  case command_move_t::EResult::WrongPath:
-    return os << "WrongPath";
-  case command_move_t::EResult::Failed:
-    return os << "Failed";
-  }
+std::ostream& operator<<(std::ostream& os, const unit_t& unit) {
+  return os << "unit#" << unit.id; //<< " " << unit.position;
 }

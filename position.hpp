@@ -73,8 +73,8 @@ template <coord_t W, coord_t H, typename pos_t = position_t<W, H>>
 constexpr distance_t distance(const position_t<W, H>& from, const pos_t& to) noexcept {
   const auto dst = [](auto a, auto b) { return a > b ? a - b : b - a; };
 
-  auto dx = std::min(dst(from.x, to.x), dst(from.x + W, to.x));
-  auto dy = std::min(dst(from.y, to.y), dst(from.y + H, to.y));
+  auto dx = std::min({dst(from.x, to.x), dst(from.x + W, to.x), dst(from.x, to.x + W)});
+  auto dy = std::min({dst(from.y, to.y), dst(from.y + H, to.y), dst(from.y, to.y + H)});
   return dx * dx + dy * dy;
 }
 
