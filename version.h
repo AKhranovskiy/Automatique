@@ -11,6 +11,6 @@ struct version_t {
   std::size_t date;
   const char* const name;
 };
-static const version_t KVersion = {0, 3, cx::date(), "AloneRobot"};
+static const version_t KVersion = {0, 4, cx::date(), "Unit&Control"};
 
 std::ostream& operator<<(std::ostream& os, const version_t& v) noexcept;
