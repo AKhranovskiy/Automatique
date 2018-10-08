@@ -1,5 +1,6 @@
 #pragma once
 
+#include "future_utils.hpp"
 #include <future>
 #include <queue>
 
@@ -47,9 +48,17 @@ template <class Object, class Operation> struct operation_queue_t {
     }
   }
 
+  idle_future_t stop() noexcept {
+    if (!_operations.empty()) {
+      _operations = {};
+      _idle_promise.set_value(_object);
+    }
+    return _idle_future;
+  }
+
 private:
   void check_idle_promise() noexcept {
-    if (_operations.empty()) {
+    if (_operations.empty() && !future_utils::is_future_ready(_idle_future)) {
       _idle_promise.set_value(_object);
       _idle_promise = {};
       _idle_future = _idle_promise.get_future();
