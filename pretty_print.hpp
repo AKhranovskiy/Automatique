@@ -1,6 +1,7 @@
 #pragma once
 
 #include "position.hpp"
+#include "world.h"
 
 #include <optional>
 #include <ostream>
@@ -33,3 +34,8 @@ template <class... Args> auto& operator<<(std::ostream& os, const std::tuple<Arg
 
 struct unit_t;
 std::ostream& operator<<(std::ostream& os, const unit_t& unit);
+
+std::ostream& operator<<(std::ostream& os, ETileContent content);
+
+class discovery_module_t;
+std::ostream& operator<<(std::ostream& os, const discovery_module_t& discovery);

@@ -34,19 +34,19 @@ template <coord_t W, coord_t H> struct position_t {
 // TODO Spaceship operator?
 template <coord_t W, coord_t H, typename pos_t = position_t<W, H>>
 constexpr bool operator==(const position_t<W, H>& lhs, const pos_t& rhs) noexcept {
-  return lhs.x == rhs.x && lhs.y == rhs.y;
+  return std::tie(lhs.x, lhs.y) == std::tie(rhs.x, rhs.y);
 }
 template <coord_t W, coord_t H, typename pos_t = position_t<W, H>>
 constexpr bool operator!=(const position_t<W, H>& lhs, const pos_t& rhs) noexcept {
-  return !(lhs == rhs);
+  return std::tie(lhs.x, lhs.y) != std::tie(rhs.x, rhs.y);
 }
 template <coord_t W, coord_t H, typename pos_t = position_t<W, H>>
 constexpr bool operator<(const position_t<W, H>& lhs, const pos_t& rhs) noexcept {
-  return lhs.x < rhs.x && lhs.y < rhs.y;
+  return std::tie(lhs.x, lhs.y) < std::tie(rhs.x, rhs.y);
 }
 template <coord_t W, coord_t H, typename pos_t = position_t<W, H>>
 constexpr bool operator>(const position_t<W, H>& lhs, const pos_t& rhs) noexcept {
-  return lhs.x > rhs.x && lhs.y > rhs.y;
+  return std::tie(lhs.x, lhs.y) > std::tie(rhs.x, rhs.y);
 }
 
 template <coord_t W, coord_t H, typename pos_t = position_t<W, H>>

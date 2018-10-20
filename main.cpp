@@ -1,5 +1,5 @@
 #include "control_module.hpp"
-#include "future_utils.hpp"
+#include "discovery_module.h"
 #include "pretty_print.hpp"
 #include "traits.h"
 #include "unit.h"
@@ -7,25 +7,36 @@
 #include "world.h"
 #include <iostream>
 
-using future_utils::get_result;
-using future_utils::is_future_ready;
+// template <class Trait, class ControlCenter>
+// std::optional<std::reference_wrapper<ControlCenter>> get_robot(ControlCenter& control) noexcept {
+//   if constexpr (std::is_same_v<Trait, typename ControlCenter::object_t>)
+//     return std::make_optional(std::ref(control));
+//   return std::nullopt;
+// }
 
 int main() {
   std::cout << KVersion << '\n';
   std::cout << "Start game loop" << std::endl;
 
   unit_t u{1u, {1, 1}};
+  auto scout = control_module_t<unit_t, trait_move_t, trait_discover_t>{u};
   std::cout << u << " " << u.position << '\n';
 
-  auto c = control_module_t<unit_t, trait_move_t, trait_ping_t>{u};
-  auto f = c.start().move(findPath(u.position, {4, 3})).ping().finish();
-  auto idle = c.idle();
-  std::cout << "Idle: " << is_future_ready(idle) << '\n';
-  while (!is_future_ready(f)) c();
-  std::cout << "Idle: " << is_future_ready(idle) << '\n';
-  auto& u2 = f.get();
+  unit_t u2{2u, {3, 3}};
+  auto scout2 = control_module_t<unit_t, trait_move_t, trait_discover_t>{u2};
   std::cout << u2 << " " << u2.position << '\n';
-  std::cout << "Idle: " << is_future_ready(c.idle()) << '\n';
+
+  auto discovery = discovery_module_t{1u, {2, 2}};
+
+  auto discovered = discovery.discover(1);
+  run(discovery, discovered);
+
+  discovered = discovery.assign(scout);
+  discovery();
+  discovery();
+  discovered = discovery.assign(scout2);
+  run(discovery, discovered);
+  std::cout << discovery << " has finished.\n";
 
   std::cout << "Finish game loop\n" << std::endl;
   return 0;

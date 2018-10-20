@@ -19,6 +19,7 @@ add_compile_options(-Wfloat-equal)
 add_compile_options(-fstrict-aliasing)
 
 set(IMPLEMENTATION_SOURCES
+  discovery_module.cpp
   pretty_print.cpp
   traits.cpp
   version.cpp
@@ -29,6 +30,7 @@ set(IMPLEMENTATION_HEADERS
   control_module.hpp
   cxdate.hpp
   cxhash.hpp
+  discovery_module.h
   future_combine.hpp
   future_utils.hpp
   operation.h
@@ -48,7 +50,7 @@ add_library(${PROJECT_NAME} STATIC
 )
 target_include_directories(${PROJECT_NAME} PUBLIC .)
 
-add_executable(${PROJECT_NAME}.app EXCLUDE_FROM_ALL main.cpp)
+add_executable(${PROJECT_NAME}.app main.cpp)
 target_link_libraries(${PROJECT_NAME}.app PRIVATE ${PROJECT_NAME})
 
 # set(CATCH_BUILD_TESTING OFF CACHE "No self test")

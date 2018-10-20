@@ -64,3 +64,22 @@ struct trait_ping_t {
 private:
   static operation_t operation(const unit_t& unit) noexcept;
 };
+
+struct trait_discover_t {
+  struct properties {};
+
+  template <class ControlBlock> struct extension {
+    ControlBlock& discover(World::position_t area) noexcept {
+      auto& control_block = static_cast<ControlBlock&>(*this);
+      const auto& current_pos = control_block.object().position;
+      if (current_pos != area) {
+        auto path = findPath(current_pos, area);
+        control_block.move(path).finish();
+      }
+      return create_operation<ControlBlock, unit_t>(*this, &operation, area);
+    }
+  };
+
+private:
+  static operation_t operation(const unit_t& unit, World::position_t area) noexcept;
+};

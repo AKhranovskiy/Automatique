@@ -8,6 +8,7 @@ add_executable(${PROJECT_NAME}
   main.cpp
   unit_operation_queue.cpp
   unit_position.cpp
+  unit_world.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}

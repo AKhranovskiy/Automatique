@@ -1,9 +1,10 @@
 #include "traits.h"
 #include "pretty_print.hpp"
 #include <iostream>
+#include <random>
 
 operation_t trait_move_t::operation(unit_t& unit, World::path_t path) noexcept {
-  return [&u = unit, p = std::move(path)]() mutable -> bool {
+  return [&u = unit, p = std::move(path) ]() mutable->bool {
     if (p.empty()) return true;
     if (p.back() != u.position) throw ex_trait_move_wrong_position{};
 
@@ -22,8 +23,22 @@ operation_t trait_move_t::operation(unit_t& unit, World::path_t path) noexcept {
 }
 
 operation_t trait_ping_t::operation(const unit_t& unit) noexcept {
-  return [&u = unit]() -> bool {
+  return [&u = unit]()->bool {
     std::cout << u << " says Pong!\n";
+    return true;
+  };
+}
+
+operation_t trait_discover_t::operation(const unit_t& unit, World::position_t area) noexcept {
+  return [&u = unit, area ]()->bool {
+    if (World::Tiles[area] == ETileContent::Unknown) {
+      std::random_device rd;
+      std::ranlux24 gen{rd()};
+      std::uniform_int_distribution<> dis(1, get_tile_content_count() - 1);
+      World::Tiles[area] = static_cast<ETileContent>(dis(gen));
+    }
+    std::cout << u << " has discovered area " << area << ". It contains " << World::Tiles[area]
+              << ".\n";
     return true;
   };
 }

@@ -4,6 +4,10 @@
 #include <future>
 #include <queue>
 
+template <class Operation, class Result> void run(Operation& operation, Result&& result) noexcept {
+  while (!future_utils::is_future_ready(result)) operation();
+}
+
 template <class Object, class Operation> struct operation_queue_t {
   using object_t = Object;
   using operation_t = Operation;
