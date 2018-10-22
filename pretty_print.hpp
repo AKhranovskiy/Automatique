@@ -1,7 +1,7 @@
 #pragma once
 
 #include "position.hpp"
-#include "world.h"
+#include "tilecontent.h"
 
 #include <optional>
 #include <ostream>
@@ -39,3 +39,6 @@ std::ostream& operator<<(std::ostream& os, ETileContent content);
 
 class discovery_module_t;
 std::ostream& operator<<(std::ostream& os, const discovery_module_t& discovery);
+
+struct World;
+std::ostream& operator<<(std::ostream& os, const World& world);

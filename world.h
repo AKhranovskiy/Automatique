@@ -1,37 +1,8 @@
 #pragma once
 
+#include "chronicles.h"
 #include "position.hpp"
 #include <unordered_set>
-
-enum class ETileContent {
-  Unknown,
-  None,
-  Coal,
-  Ore,
-  Water,
-};
-constexpr std::underlying_type_t<ETileContent> get_tile_content_count() noexcept {
-  std::underlying_type_t<ETileContent> count = 0;
-  switch (ETileContent{}) {
-  case ETileContent::Unknown:
-    ++count;
-    [[fallthrough]];
-  case ETileContent::None:
-    ++count;
-    [[fallthrough]];
-  case ETileContent::Coal:
-    ++count;
-    [[fallthrough]];
-  case ETileContent::Ore:
-    ++count;
-    [[fallthrough]];
-  case ETileContent::Water:
-    ++count;
-    [[fallthrough]];
-  default: {};
-  }
-  return count;
-}
 
 struct World {
   static constexpr const coord_t WIDTH{5u};
@@ -47,4 +18,7 @@ struct World {
   using area_list_t = std::vector<World::position_t>;
   static area_list_t get_areas(const World::position_t& center, distance_t radius,
                                ETileContent tile) noexcept;
+
+  static chronicles_t& Chronicles() noexcept;
+  static chronicles_t& Chronicles(chronicles_t& new_chronicles) noexcept;
 };

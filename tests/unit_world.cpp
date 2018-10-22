@@ -2,9 +2,7 @@
 
 #include "world.h"
 
-TEST_CASE("Tile Content Count", "[world]") {
-  REQUIRE(5 == get_tile_content_count());
-}
+TEST_CASE("Tile Content Count", "[world]") { REQUIRE(5 == get_tile_content_count()); }
 
 TEST_CASE("Find unknown areas", "[world]") {
   const auto center = World::position_t{2, 2};

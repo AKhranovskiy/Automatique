@@ -80,12 +80,11 @@ TEST_CASE("Operation Queue", "[control]") {
   op_queue q{u};
 
   SECTION("clears queue on stop") {
-    q.add([](){return true;});
+    q.add([]() { return true; });
     auto idle = q.idle();
     REQUIRE(!is_future_ready(idle));
     q.stop();
     REQUIRE(is_future_ready(idle));
     REQUIRE(is_future_ready(q.idle()));
   }
-  
 }

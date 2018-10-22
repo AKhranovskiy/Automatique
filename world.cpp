@@ -3,6 +3,13 @@
 World::tiles_t World::Tiles{};
 
 namespace {
+
+chronicles_t& GetDefaultChronicles() noexcept {
+  static chronicles_t chronicles{};
+  return chronicles;
+}
+chronicles_t* CurrentChronicles = &GetDefaultChronicles();
+
 using area_set_t = std::unordered_set<World::position_t, World::position_hash_t>;
 
 void gather_areas(const World::position_t& center, distance_t radius, ETileContent tile,
@@ -23,4 +30,10 @@ World::area_list_t World::get_areas(const World::position_t& center, distance_t 
   area_set_t result;
   gather_areas(center, radius, tile, center, result);
   return {result.begin(), result.end()};
+}
+
+chronicles_t& World::Chronicles() noexcept { return *CurrentChronicles; }
+chronicles_t& World::Chronicles(chronicles_t& new_chronicles) noexcept {
+  CurrentChronicles = &new_chronicles;
+  return Chronicles();
 }

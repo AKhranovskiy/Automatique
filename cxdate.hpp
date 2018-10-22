@@ -18,6 +18,8 @@ template <char a, char b, char c> struct month_t;
 
 template <> struct month_t<'S', 'e', 'p'> { static const std::size_t id = 9u; };
 template <> struct month_t<'O', 'c', 't'> { static const std::size_t id = 10u; };
+template <> struct month_t<'N', 'o', 'v'> { static const std::size_t id = 11u; };
+template <> struct month_t<'D', 'e', 'c'> { static const std::size_t id = 12u; };
 // TODO add other months later...
 
 constexpr std::size_t month() noexcept {

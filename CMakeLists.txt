@@ -19,6 +19,7 @@ add_compile_options(-Wfloat-equal)
 add_compile_options(-fstrict-aliasing)
 
 set(IMPLEMENTATION_SOURCES
+  chronicles.cpp
   discovery_module.cpp
   pretty_print.cpp
   traits.cpp
@@ -26,6 +27,7 @@ set(IMPLEMENTATION_SOURCES
   world.cpp
 )
 set(IMPLEMENTATION_HEADERS
+  chronicles.h
   control_block.hpp
   control_module.hpp
   cxdate.hpp
@@ -37,6 +39,7 @@ set(IMPLEMENTATION_HEADERS
   operation_queue.hpp
   position.hpp
   pretty_print.hpp
+  tilecontent.h
   traits.h
   unit.h
   variant_utils.hpp

@@ -1,6 +1,4 @@
 #include "traits.h"
-#include "pretty_print.hpp"
-#include <iostream>
 #include <random>
 
 operation_t trait_move_t::operation(unit_t& unit, World::path_t path) noexcept {
@@ -10,12 +8,15 @@ operation_t trait_move_t::operation(unit_t& unit, World::path_t path) noexcept {
 
     p.pop_back();
 
-    if (p.empty()) return true;
+    if (p.empty()) {
+      World::Chronicles().Log(u) << " has arrived to " << u.position << '\n';
+      return true;
+    }
 
     auto new_pos = p.back();
     if (distance(new_pos, u.position) > 1) throw ex_trait_move_too_far{};
 
-    std::cout << u << " is moving from " << u.position << " to " << new_pos << '\n';
+    World::Chronicles().Log(u) << " is moving from " << u.position << " to " << new_pos << '\n';
 
     u.position = new_pos;
     return false;
@@ -24,7 +25,7 @@ operation_t trait_move_t::operation(unit_t& unit, World::path_t path) noexcept {
 
 operation_t trait_ping_t::operation(const unit_t& unit) noexcept {
   return [&u = unit]()->bool {
-    std::cout << u << " says Pong!\n";
+    World::Chronicles().Log(u) << " says Pong!\n";
     return true;
   };
 }
@@ -37,8 +38,8 @@ operation_t trait_discover_t::operation(const unit_t& unit, World::position_t ar
       std::uniform_int_distribution<> dis(1, get_tile_content_count() - 1);
       World::Tiles[area] = static_cast<ETileContent>(dis(gen));
     }
-    std::cout << u << " has discovered area " << area << ". It contains " << World::Tiles[area]
-              << ".\n";
+    World::Chronicles().Log(u) << " has discovered area " << area << ". It contains "
+                               << World::Tiles[area] << ".\n";
     return true;
   };
 }
