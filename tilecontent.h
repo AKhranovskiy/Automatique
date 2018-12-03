@@ -1,4 +1,5 @@
 #pragma once
+#include <type_traits>
 
 enum class ETileContent {
   Unknown,
@@ -26,7 +27,7 @@ constexpr std::underlying_type_t<ETileContent> get_tile_content_count() noexcept
     ++count;
     [[fallthrough]];
   default: {
-  };
+  }
   }
   return count;
 }

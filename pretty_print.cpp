@@ -38,10 +38,11 @@ std::ostream& operator<<(std::ostream& os, const World& /*world*/) {
   os << "\n┏";
   for (auto i = 0u; i < World::WIDTH; ++i) os << "━";
   os << "┓\n";
-  for (auto i = 0u; i < World::HEIGHT; ++i) {
+
+  for (auto y = 0u; y < World::HEIGHT; ++y) {
     os << "┃";
-    for (auto j = 0u; j < World::WIDTH; ++j) {
-      const World::position_t pos{i, j};
+    for (auto x = 0u; x < World::WIDTH; ++x) {
+      const World::position_t pos{x, y};
       if (World::Tiles.count(pos) == 1) {
         os << World::Tiles.at(pos);
       } else {
@@ -50,9 +51,11 @@ std::ostream& operator<<(std::ostream& os, const World& /*world*/) {
     }
     os << "┃\n";
   }
+
   os << "┗";
   for (auto i = 0u; i < World::WIDTH; ++i) os << "━";
   os << "┛\n";
+
   os << '\n';
   return os;
 }

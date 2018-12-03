@@ -75,7 +75,7 @@ constexpr distance_t distance(const position_t<W, H>& from, const pos_t& to) noe
 
   auto dx = std::min({dst(from.x, to.x), dst(from.x + W, to.x), dst(from.x, to.x + W)});
   auto dy = std::min({dst(from.y, to.y), dst(from.y + H, to.y), dst(from.y, to.y + H)});
-  return dx * dx + dy * dy;
+  return dx + dy;
 }
 
 template <coord_t W, coord_t H>
@@ -132,16 +132,16 @@ path_t<W, H> findPath(const position_t<W, H>& start, const pos_t& goal) noexcept
   // Find node in openSet with minimal fScore
   const auto findCurrent = [&]() -> pos_t {
     auto score = Inf;
-    const pos_t* pos = nullptr;
+    std::optional<pos_t> pos;
     for (const auto& node : openSet) {
       auto f = getScore(fScore, node);
       if (f < score) {
         score = f;
-        pos = &node;
+        pos = node;
       }
     }
-    assert(pos != nullptr);
-    return pos_t{*pos};
+    assert(pos);
+    return *pos;
   };
 
   const auto reconstruct_path = [&](const pos_t& pos) {

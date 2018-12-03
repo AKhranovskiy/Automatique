@@ -4,8 +4,13 @@
 #include "world.h"
 
 namespace {
-using pos_t = position_t<5, 5>;
+using pos_t = World::position_t;
 } // namespace
+
+bool operator==(const World::path_t& given, const std::initializer_list<pos_t>& expected) noexcept {
+  return given.size() == expected.size() &&
+         std::equal(given.cbegin(), given.cend(), expected.begin());
+}
 
 TEST_CASE("Positions are", "[position]") {
   SECTION("equal") {
@@ -48,6 +53,10 @@ TEST_CASE("Distance", "[position]") {
     test_distance(pos, move2(EDirection::South, EDirection::West), 2);
     test_distance(pos, move2(EDirection::West, EDirection::North), 2);
   }
+  SECTION("far points") {
+    test_distance({2, 2}, {2, 0}, 2);
+    test_distance({2, 2}, {4, 0}, 4);
+  }
 }
 
 TEST_CASE("Neighbors", "[position]") {
@@ -61,4 +70,30 @@ TEST_CASE("Neighbors", "[position]") {
 
   REQUIRE(compare_arrays(neighborhs(pos_t{2, 2}),
                          nbrs_t{pos_t{2, 1}, pos_t{3, 2}, pos_t{2, 3}, pos_t{1, 2}}));
+}
+
+TEST_CASE("Find path", "[position]") {
+  SECTION("between same points gives point itself") {
+    const auto point = pos_t{1, 1};
+    const auto expected = {point};
+    CHECK(findPath(point, point) == expected);
+  }
+  SECTION("between neighbor points") {
+    const auto from = pos_t{1, 1};
+    const auto to = pos_t{1, 2};
+    const auto expected = {to, from};
+    CHECK(findPath(from, to) == expected);
+  }
+  SECTION("between diagonal points") {
+    const auto from = pos_t{1, 1};
+    const auto to = pos_t{2, 2};
+    const auto expected = {to, pos_t{1, 2}, from};
+    CHECK(findPath(from, to) == expected);
+  }
+  SECTION("across borders") {
+    const auto from = pos_t{0, 0};
+    const auto to = pos_t{4, 4};
+    const auto expected = {to, pos_t{4, 0}, from};
+    CHECK(findPath(from, to) == expected);
+  }
 }
