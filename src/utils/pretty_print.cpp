@@ -36,13 +36,13 @@ std::ostream& operator<<(std::ostream& os, ETileContent content) {
   return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const discovery_module_t& discovery) {
+std::ostream& operator<<(std::ostream& os, const module_discovery_t& discovery) {
   return os << "Discovery#" << discovery.id;
 }
-std::ostream& operator<<(std::ostream& os, const mining_module_t& mining) {
+std::ostream& operator<<(std::ostream& os, const module_mining_t& mining) {
   return os << "Mining#" << mining.id;
 }
-std::ostream& operator<<(std::ostream& os, const warehouse_module_t& warehouse) {
+std::ostream& operator<<(std::ostream& os, const module_warehouse_t& warehouse) {
   return os << "Warehouse#" << warehouse.id;
 }
 

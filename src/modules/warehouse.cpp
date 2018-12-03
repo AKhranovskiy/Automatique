@@ -2,12 +2,12 @@
 #include "units/carrier.h"
 #include "utils/pretty_print.hpp"
 
-warehouse_module_t::warehouse_module_t(module_id_t id, World::position_t position) noexcept
+module_warehouse_t::module_warehouse_t(module_id_t id, World::position_t position) noexcept
     : id{id}, position{position}, _storage{{EResourceType::Coal, {0, 100u}},
                                            {EResourceType::Ore, {0, 100u}},
                                            {EResourceType::Water, {0, 100u}}} {}
 
-operation_t warehouse_module_t::unload(unit_carrier_t& carrier) {
+operation_t module_warehouse_t::unload(unit_carrier_t& carrier) {
   return [this, &carrier]() mutable -> bool {
     World::Chronicles().Log(*this) << "unloads " << carrier << ".\n";
     if (this->_storage.count(carrier.type) != 1) throw ex_warehouse_unknown_resource{carrier.type};
@@ -23,7 +23,7 @@ operation_t warehouse_module_t::unload(unit_carrier_t& carrier) {
   };
 }
 
-std::optional<size_t> warehouse_module_t::get_resource_amount(EResourceType type) const noexcept {
+std::optional<size_t> module_warehouse_t::get_resource_amount(EResourceType type) const noexcept {
   return _storage.count(type) == 1 ? std::make_optional(_storage.at(type).current) : std::nullopt;
 }
 

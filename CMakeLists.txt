@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.9)
 
 project(Automatique
-  VERSION 0.7.0.0
+  VERSION 0.7.1.0
   DESCRIPTION "Automatic robotic world"
   LANGUAGES CXX
 )
@@ -32,16 +32,12 @@ set(IMPLEMENTATION_SOURCES
 )
 set(IMPLEMENTATION_HEADERS
   src/chronicles.h
-  src/utils/cxdate.hpp
-  src/utils/cxhash.hpp
-  src/utils/future_combine.hpp
-  src/utils/future.hpp
-  src/modules/control.hpp
+  src/modules/base_unit_control.h
   src/modules/discovery.h
   src/modules/mining.h
   src/modules/warehouse.h
-  src/utils/pretty_print.hpp
   src/primitives/control_block.hpp
+  src/primitives/module_control.hpp
   src/primitives/operation.h
   src/primitives/operation_queue.hpp
   src/traits/common.hpp
@@ -53,6 +49,11 @@ set(IMPLEMENTATION_HEADERS
   src/types/tilecontent.h
   src/units/basic.h
   src/units/carrier.h
+  src/utils/cxdate.hpp
+  src/utils/cxhash.hpp
+  src/utils/future.hpp
+  src/utils/future_combine.hpp
+  src/utils/pretty_print.hpp
   src/utils/variant.hpp
   src/version.h
   src/world.h

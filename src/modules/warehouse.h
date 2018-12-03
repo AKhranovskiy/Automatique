@@ -23,14 +23,14 @@ public:
       : std::runtime_error("Storage for resource type {" + to_string(type) + "} is full") {}
 };
 
-class warehouse_module_t {
+class module_warehouse_t {
 public:
   using module_id_t = size_t;
 
   const module_id_t id;
   const World::position_t position;
 
-  explicit warehouse_module_t(module_id_t id, World::position_t position) noexcept;
+  explicit module_warehouse_t(module_id_t id, World::position_t position) noexcept;
 
   operation_t unload(unit_carrier_t& miner);
 

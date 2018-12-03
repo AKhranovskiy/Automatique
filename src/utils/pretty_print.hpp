@@ -40,14 +40,14 @@ std::ostream& operator<<(std::ostream& os, const unit_carrier_t& carrier);
 
 std::ostream& operator<<(std::ostream& os, ETileContent content);
 
-class discovery_module_t;
-std::ostream& operator<<(std::ostream& os, const discovery_module_t& discovery);
+class module_discovery_t;
+std::ostream& operator<<(std::ostream& os, const module_discovery_t& discovery);
 
-class mining_module_t;
-std::ostream& operator<<(std::ostream& os, const mining_module_t& mining);
+class module_mining_t;
+std::ostream& operator<<(std::ostream& os, const module_mining_t& mining);
 
-class warehouse_module_t;
-std::ostream& operator<<(std::ostream& os, const warehouse_module_t& warehouse);
+class module_warehouse_t;
+std::ostream& operator<<(std::ostream& os, const module_warehouse_t& warehouse);
 
 struct World;
 std::ostream& operator<<(std::ostream& os, const World& world);
