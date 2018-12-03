@@ -8,7 +8,7 @@ TEST_CASE("Find unknown areas", "[world]") {
   const auto center = World::position_t{2, 2};
   const auto unknown_tile = ETileContent::Unknown;
 
-  const auto get_areas = [ center, tile = unknown_tile ](distance_t d) {
+  const auto get_areas = [center, tile = unknown_tile](distance_t d) {
     struct {
       const World::area_list_t areas;
       inline constexpr bool has(World::position_t pos) const noexcept {

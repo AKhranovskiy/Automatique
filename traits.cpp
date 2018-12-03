@@ -2,7 +2,7 @@
 #include <random>
 
 operation_t trait_move_t::operation(unit_t& unit, World::path_t path) noexcept {
-  return [&u = unit, p = std::move(path) ]() mutable->bool {
+  return [&u = unit, p = std::move(path)]() mutable -> bool {
     if (p.empty()) return true;
     if (p.back() != u.position) throw ex_trait_move_wrong_position{};
 
@@ -24,14 +24,14 @@ operation_t trait_move_t::operation(unit_t& unit, World::path_t path) noexcept {
 }
 
 operation_t trait_ping_t::operation(const unit_t& unit) noexcept {
-  return [&u = unit]()->bool {
+  return [&u = unit]() -> bool {
     World::Chronicles().Log(u) << " says Pong!\n";
     return true;
   };
 }
 
 operation_t trait_discover_t::operation(const unit_t& unit, World::position_t area) noexcept {
-  return [&u = unit, area ]()->bool {
+  return [&u = unit, area]() -> bool {
     if (World::Tiles[area] == ETileContent::Unknown) {
       std::random_device rd;
       std::ranlux24 gen{rd()};

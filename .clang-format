@@ -1,0 +1,14 @@
+BasedOnStyle: LLVM
+---
+Language: Cpp
+AccessModifierOffset: -2
+AllowShortIfStatementsOnASingleLine : true
+AllowShortLoopsOnASingleLine: true
+ColumnLimit: 100
+CompactNamespaces: false
+Cpp11BracedListStyle: true
+FixNamespaceComments: true
+PointerAlignment: Left
+SortUsingDeclarations: true
+Standard: C++11
+

@@ -24,7 +24,7 @@ public:
   result_t discover(distance_t radius) noexcept;
 
   using scout_t = control_module_t<unit_t, trait_move_t, trait_discover_t>;
-  result_t assign(scout_t& scout);
+  result_t assign(scout_t& scout) noexcept;
 
 private:
   std::set<World::position_t> _areas;

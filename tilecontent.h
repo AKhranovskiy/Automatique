@@ -25,7 +25,8 @@ constexpr std::underlying_type_t<ETileContent> get_tile_content_count() noexcept
   case ETileContent::Water:
     ++count;
     [[fallthrough]];
-  default: {};
+  default: {
+  };
   }
   return count;
 }

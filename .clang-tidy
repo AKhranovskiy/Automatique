@@ -1,0 +1,18 @@
+---
+Checks:          '*,
+                  -bugprone-exception-escape,
+                  -cppcoreguidelines-avoid-magic-numbers,
+                  -fuchsia-*,
+                  -google-readability-braces-around-statements,
+                  -google-runtime-references,
+                  -hicpp-braces-around-statements,
+                  -readability-braces-around-statements,
+                  -readability-magic-numbers,
+                  '
+WarningsAsErrors: ''
+HeaderFilterRegex: ''
+AnalyzeTemporaryDtors: false
+FormatStyle:     file
+CheckOptions:    
+...
+

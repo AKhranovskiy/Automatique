@@ -10,9 +10,10 @@ discovery_module_t::result_t discovery_module_t::discover(distance_t radius) noe
   return idle();
 };
 
-discovery_module_t::result_t discovery_module_t::assign(discovery_module_t::scout_t& scout) {
+discovery_module_t::result_t
+discovery_module_t::assign(discovery_module_t::scout_t& scout) noexcept {
   World::Chronicles().Log(*this) << " has received " << scout.object() << ".\n";
-  _idle_scouts.push_back({scout});
+  _idle_scouts.emplace_back(scout);
   add(dispatch());
   return idle();
 }
@@ -48,7 +49,7 @@ operation_t discovery_module_t::dispatch() noexcept {
       scout.get().start().discover(*area).finish();
       World::Chronicles().Log(*this)
           << " has assigned " << scout.get().object() << " to discover area" << *area << ".\n";
-      this->_tasks.push_back({*area, std::move(scout)});
+      this->_tasks.push_back({*area, scout});
       this->_idle_scouts.pop_front();
       this->_areas.erase(area);
     }
@@ -67,7 +68,7 @@ operation_t discovery_module_t::run() noexcept {
       auto completed =
           std::find_if(tasks.begin(), tasks.end(), [](auto& task) { return task.scout(); });
       if (completed != tasks.end()) {
-        this->_idle_scouts.push_back(std::move(completed->scout));
+        this->_idle_scouts.push_back(completed->scout);
         this->_tasks.erase(completed);
       }
     }

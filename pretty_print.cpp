@@ -34,7 +34,7 @@ std::ostream& operator<<(std::ostream& os, const discovery_module_t& discovery) 
   return os << "Discovery#" << discovery.id;
 }
 
-std::ostream& operator<<(std::ostream& os, const World&  /*world*/) {
+std::ostream& operator<<(std::ostream& os, const World& /*world*/) {
   os << "\n┏";
   for (auto i = 0u; i < World::WIDTH; ++i) os << "━";
   os << "┓\n";
@@ -46,7 +46,7 @@ std::ostream& operator<<(std::ostream& os, const World&  /*world*/) {
         os << World::Tiles.at(pos);
       } else {
         os << ETileContent::Unknown;
-}
+      }
     }
     os << "┃\n";
   }
