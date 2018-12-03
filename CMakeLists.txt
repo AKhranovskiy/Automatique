@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.9)
 
 project(Automatique
-  VERSION 0.6.0.0
+  VERSION 0.7.0.0
   DESCRIPTION "Automatic robotic world"
   LANGUAGES CXX
 )
