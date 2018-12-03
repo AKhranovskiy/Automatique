@@ -1,7 +1,8 @@
 #pragma once
 
-#include "position.hpp"
-#include "tilecontent.h"
+#include "types/position.hpp"
+#include "types/resourcetype.h"
+#include "types/tilecontent.h"
 
 #include <optional>
 #include <ostream>
@@ -32,13 +33,30 @@ template <class... Args> auto& operator<<(std::ostream& os, const std::tuple<Arg
   return os << ")";
 }
 
-struct unit_t;
-std::ostream& operator<<(std::ostream& os, const unit_t& unit);
+struct unit_basic_t;
+std::ostream& operator<<(std::ostream& os, const unit_basic_t& unit);
+struct unit_carrier_t;
+std::ostream& operator<<(std::ostream& os, const unit_carrier_t& carrier);
 
 std::ostream& operator<<(std::ostream& os, ETileContent content);
 
 class discovery_module_t;
 std::ostream& operator<<(std::ostream& os, const discovery_module_t& discovery);
 
+class mining_module_t;
+std::ostream& operator<<(std::ostream& os, const mining_module_t& mining);
+
+class warehouse_module_t;
+std::ostream& operator<<(std::ostream& os, const warehouse_module_t& warehouse);
+
 struct World;
 std::ostream& operator<<(std::ostream& os, const World& world);
+
+template <class V> std::ostream& operator<<(std::ostream& os, const std::vector<V>& vec) {
+  os << '[';
+  for (const auto& v : vec) os << v;
+  os << ']';
+  return os;
+}
+
+std::ostream& operator<<(std::ostream& os, EResourceType type);

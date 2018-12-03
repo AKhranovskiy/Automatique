@@ -1,7 +1,7 @@
 #pragma once
 
 #include "chronicles.h"
-#include "position.hpp"
+#include "types/position.hpp"
 #include <unordered_set>
 
 struct World {
@@ -14,6 +14,8 @@ struct World {
 
   using tiles_t = std::unordered_map<position_t, ETileContent, position_hash_t>;
   static tiles_t Tiles;
+
+  static ETileContent get_tile_info(position_t position) noexcept;
 
   using area_list_t = std::vector<World::position_t>;
   static area_list_t get_areas(const World::position_t& center, distance_t radius,

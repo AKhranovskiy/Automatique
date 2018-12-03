@@ -1,10 +1,11 @@
 #pragma once
 
-#include "control_module.hpp"
-#include "operation.h"
-#include "operation_queue.hpp"
-#include "traits.h"
-#include "unit.h"
+#include "modules/control.hpp"
+#include "primitives/operation.h"
+#include "primitives/operation_queue.hpp"
+#include "traits/discover.hpp"
+#include "traits/move.hpp"
+#include "units/basic.h"
 #include "world.h"
 #include <list>
 #include <set>
@@ -23,8 +24,10 @@ public:
 
   result_t discover(distance_t radius) noexcept;
 
-  using scout_t = control_module_t<unit_t, trait_move_t, trait_discover_t>;
+  using scout_t = control_module_t<unit_basic_t, trait_move_t, trait_discover_t>;
   result_t assign(scout_t& scout) noexcept;
+  result_t assign(
+      std::initializer_list<std::reference_wrapper<discovery_module_t::scout_t>>&& scouts) noexcept;
 
 private:
   std::set<World::position_t> _areas;

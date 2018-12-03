@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cxhash.hpp"
+#include "utils/cxhash.hpp"
 
 #include <algorithm>
 #include <array>
@@ -87,7 +87,7 @@ constexpr std::array<position_t<W, H>, 4> neighborhs(const position_t<W, H>& pos
 template <coord_t W, coord_t H> using path_t = std::vector<position_t<W, H>>;
 
 template <coord_t W, coord_t H, typename pos_t = position_t<W, H>>
-path_t<W, H> findPath(const position_t<W, H>& start, const pos_t& goal) noexcept {
+path_t<W, H> find_path(const position_t<W, H>& start, const pos_t& goal) noexcept {
   using position_hash_t = position_hash<W, H>;
 
   using set_t = std::unordered_set<pos_t, position_hash_t>;

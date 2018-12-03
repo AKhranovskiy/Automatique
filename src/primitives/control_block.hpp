@@ -1,7 +1,7 @@
 #pragma once
 
-#include "operation.h"
-#include "operation_queue.hpp"
+#include "primitives/operation.h"
+#include "primitives/operation_queue.hpp"
 
 template <class Object, class... Traits>
 class control_block_t : public operation_queue_t<Object, operation_t>,

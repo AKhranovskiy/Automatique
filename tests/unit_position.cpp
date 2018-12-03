@@ -1,6 +1,6 @@
 #include "catch2/catch.hpp"
 
-#include "position.hpp"
+#include "types/position.hpp"
 #include "world.h"
 
 namespace {
@@ -76,24 +76,24 @@ TEST_CASE("Find path", "[position]") {
   SECTION("between same points gives point itself") {
     const auto point = pos_t{1, 1};
     const auto expected = {point};
-    CHECK(findPath(point, point) == expected);
+    CHECK(find_path(point, point) == expected);
   }
   SECTION("between neighbor points") {
     const auto from = pos_t{1, 1};
     const auto to = pos_t{1, 2};
     const auto expected = {to, from};
-    CHECK(findPath(from, to) == expected);
+    CHECK(find_path(from, to) == expected);
   }
   SECTION("between diagonal points") {
     const auto from = pos_t{1, 1};
     const auto to = pos_t{2, 2};
     const auto expected = {to, pos_t{1, 2}, from};
-    CHECK(findPath(from, to) == expected);
+    CHECK(find_path(from, to) == expected);
   }
   SECTION("across borders") {
     const auto from = pos_t{0, 0};
     const auto to = pos_t{4, 4};
     const auto expected = {to, pos_t{4, 0}, from};
-    CHECK(findPath(from, to) == expected);
+    CHECK(find_path(from, to) == expected);
   }
 }

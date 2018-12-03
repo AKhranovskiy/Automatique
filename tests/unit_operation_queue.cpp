@@ -1,6 +1,6 @@
 #include "catch2/catch.hpp"
-#include "future_utils.hpp"
-#include "operation_queue.hpp"
+#include "primitives/operation_queue.hpp"
+#include "utils/future.hpp"
 
 namespace {
 using future_utils::is_future_ready;

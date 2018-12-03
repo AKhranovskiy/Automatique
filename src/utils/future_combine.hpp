@@ -1,6 +1,6 @@
 #pragma once
 
-#include "future_utils.hpp"
+#include "utils/future.hpp"
 
 #include <future>
 #include <optional>
@@ -34,14 +34,14 @@ template <class T> using ref_value_t = value_t<T&>;
 template <class T> auto make_value_t(T& t) { return ref_value_t<T>{t}; }
 template <class T> auto make_value_t(T&& t) { return value_t<T>{fwd(t)}; }
 
-template <class R, class V> struct future_wrapper_t<std::future<R>, V> {
+template <class R, class V> struct future_wrapper_t<std::shared_future<R>, V> {
   using type_t = V;
   using result_t = std::tuple<std::optional<R>>;
 
   type_t _f;
 
   constexpr explicit future_wrapper_t(type_t&& f) : _f{fwd(f)} {}
-  inline explicit operator bool() const noexcept { return is_future_ready(_f.value); }
+  inline explicit operator bool() const noexcept { return future_utils::is_future_ready(_f.value); }
   inline result_t get() { return {get_result(fwd(_f.value))}; }
 };
 
@@ -57,11 +57,11 @@ struct future_wrapper_t<future_combine<Op, Ra, Rb>, V> {
   inline result_t get() { return _fc.value.get(); }
 };
 
-template <class Ra> auto make_future_wrapper(std::future<Ra>& f) noexcept {
+template <class Ra> auto make_future_wrapper(std::shared_future<Ra>& f) noexcept {
   using future_t = std::decay_t<decltype(f)>;
   return future_wrapper_t<future_t, ref_value_t<future_t>>{make_value_t(f)};
 }
-template <class Ra> auto make_future_wrapper(std::future<Ra>&& f) noexcept {
+template <class Ra> auto make_future_wrapper(std::shared_future<Ra>&& f) noexcept {
   using future_t = std::decay_t<decltype(f)>;
   return future_wrapper_t<future_t, value_t<future_t>>{make_value_t(fwd(f))};
 }
@@ -75,32 +75,34 @@ template <class Op, class FWA, class FWB> auto make_future_combine(FWA&& fwa, FW
 }
 
 template <class A, class B>
-constexpr inline auto operator||(std::future<A>& fa, std::future<B>& fb) noexcept {
+constexpr inline auto operator||(std::shared_future<A>& fa, std::shared_future<B>& fb) noexcept {
   return make_future_combine<std::logical_or<>>(make_future_wrapper(fa), make_future_wrapper(fb));
 }
 template <class A, class B>
-constexpr inline auto operator||(std::future<A>& fa, std::future<B>&& fb) noexcept {
+constexpr inline auto operator||(std::shared_future<A>& fa, std::shared_future<B>&& fb) noexcept {
   return make_future_combine<std::logical_or<>>(make_future_wrapper(fa),
                                                 make_future_wrapper(fwd(fb)));
 }
 template <class A, class B>
-constexpr inline auto operator||(std::future<A>&& fa, std::future<B>& fb) noexcept {
+constexpr inline auto operator||(std::shared_future<A>&& fa, std::shared_future<B>& fb) noexcept {
   return make_future_combine<std::logical_or<>>(make_future_wrapper(fwd(fa)),
                                                 make_future_wrapper(fb));
 }
 template <class A, class B>
-constexpr inline auto operator||(std::future<A>&& fa, std::future<B>&& fb) noexcept {
+constexpr inline auto operator||(std::shared_future<A>&& fa, std::shared_future<B>&& fb) noexcept {
   return make_future_combine<std::logical_or<>>(make_future_wrapper(fwd(fa)),
                                                 make_future_wrapper(fwd(fb)));
 }
 
 template <class Op, class A, class B, class C>
-constexpr inline auto operator||(future_combine<Op, A, B>&& fca, std::future<C>& fb) noexcept {
+constexpr inline auto operator||(future_combine<Op, A, B>&& fca,
+                                 std::shared_future<C>& fb) noexcept {
   return make_future_combine<std::logical_or<>>(make_future_wrapper(fwd(fca)),
                                                 make_future_wrapper(fb));
 }
 template <class Op, class A, class B, class C>
-constexpr inline auto operator||(future_combine<Op, A, B>&& fca, std::future<C>&& fb) noexcept {
+constexpr inline auto operator||(future_combine<Op, A, B>&& fca,
+                                 std::shared_future<C>&& fb) noexcept {
   return make_future_combine<std::logical_or<>>(make_future_wrapper(fwd(fca)),
                                                 make_future_wrapper(fwd(fb)));
 }
@@ -112,31 +114,33 @@ constexpr inline auto operator||(future_combine<Op, A, B>&& fc,
 }
 
 template <class A, class B>
-constexpr inline auto operator&&(std::future<A>& fa, std::future<B>& fb) noexcept {
+constexpr inline auto operator&&(std::shared_future<A>& fa, std::shared_future<B>& fb) noexcept {
   return make_future_combine<std::logical_and<>>(make_future_wrapper(fa), make_future_wrapper(fb));
 }
 template <class A, class B>
-constexpr inline auto operator&&(std::future<A>& fa, std::future<B>&& fb) noexcept {
+constexpr inline auto operator&&(std::shared_future<A>& fa, std::shared_future<B>&& fb) noexcept {
   return make_future_combine<std::logical_and<>>(make_future_wrapper(fa),
                                                  make_future_wrapper(fwd(fb)));
 }
 template <class A, class B>
-constexpr inline auto operator&&(std::future<A>&& fa, std::future<B>& fb) noexcept {
+constexpr inline auto operator&&(std::shared_future<A>&& fa, std::shared_future<B>& fb) noexcept {
   return make_future_combine<std::logical_and<>>(make_future_wrapper(fwd(fa)),
                                                  make_future_wrapper(fb));
 }
 template <class A, class B>
-constexpr inline auto operator&&(std::future<A>&& fa, std::future<B>&& fb) noexcept {
+constexpr inline auto operator&&(std::shared_future<A>&& fa, std::shared_future<B>&& fb) noexcept {
   return make_future_combine<std::logical_and<>>(make_future_wrapper(fwd(fa)),
                                                  make_future_wrapper(fwd(fb)));
 }
 template <class Op, class A, class B, class C>
-constexpr inline auto operator&&(future_combine<Op, A, B>&& fca, std::future<C>& fb) noexcept {
+constexpr inline auto operator&&(future_combine<Op, A, B>&& fca,
+                                 std::shared_future<C>& fb) noexcept {
   return make_future_combine<std::logical_and<>>(make_future_wrapper(fwd(fca)),
                                                  make_future_wrapper(fb));
 }
 template <class Op, class A, class B, class C>
-constexpr inline auto operator&&(future_combine<Op, A, B>&& fca, std::future<C>&& fb) noexcept {
+constexpr inline auto operator&&(future_combine<Op, A, B>&& fca,
+                                 std::shared_future<C>&& fb) noexcept {
   return make_future_combine<std::logical_and<>>(make_future_wrapper(fwd(fca)),
                                                  make_future_wrapper(fwd(fb)));
 }

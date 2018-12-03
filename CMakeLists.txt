@@ -19,41 +19,52 @@ add_compile_options(-Wfloat-equal)
 add_compile_options(-fstrict-aliasing)
 
 set(IMPLEMENTATION_SOURCES
-  chronicles.cpp
-  discovery_module.cpp
-  pretty_print.cpp
-  traits.cpp
-  version.cpp
-  world.cpp
+  src/chronicles.cpp
+  src/modules/discovery.cpp
+  src/modules/mining.cpp
+  src/modules/warehouse.cpp
+  src/traits/discover.cpp
+  src/traits/mine.cpp
+  src/traits/move.cpp
+  src/utils/pretty_print.cpp
+  src/version.cpp
+  src/world.cpp
 )
 set(IMPLEMENTATION_HEADERS
-  chronicles.h
-  control_block.hpp
-  control_module.hpp
-  cxdate.hpp
-  cxhash.hpp
-  discovery_module.h
-  future_combine.hpp
-  future_utils.hpp
-  operation.h
-  operation_queue.hpp
-  position.hpp
-  pretty_print.hpp
-  tilecontent.h
-  traits.h
-  unit.h
-  variant_utils.hpp
-  version.h
-  world.h
+  src/chronicles.h
+  src/utils/cxdate.hpp
+  src/utils/cxhash.hpp
+  src/utils/future_combine.hpp
+  src/utils/future.hpp
+  src/modules/control.hpp
+  src/modules/discovery.h
+  src/modules/mining.h
+  src/modules/warehouse.h
+  src/utils/pretty_print.hpp
+  src/primitives/control_block.hpp
+  src/primitives/operation.h
+  src/primitives/operation_queue.hpp
+  src/traits/common.hpp
+  src/traits/discover.hpp
+  src/traits/mine.hpp
+  src/traits/move.hpp
+  src/types/position.hpp
+  src/types/resourcetype.h
+  src/types/tilecontent.h
+  src/units/basic.h
+  src/units/carrier.h
+  src/utils/variant.hpp
+  src/version.h
+  src/world.h
 )
 
 add_library(${PROJECT_NAME} STATIC
   ${IMPLEMENTATION_SOURCES}
   ${IMPLEMENTATION_HEADERS}
 )
-target_include_directories(${PROJECT_NAME} PUBLIC .)
+target_include_directories(${PROJECT_NAME} PUBLIC src/)
 
-add_executable(${PROJECT_NAME}.app main.cpp)
+add_executable(${PROJECT_NAME}.app src/main.cpp)
 target_link_libraries(${PROJECT_NAME}.app PRIVATE ${PROJECT_NAME})
 
 # set(CATCH_BUILD_TESTING OFF CACHE "No self test")

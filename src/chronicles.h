@@ -1,5 +1,5 @@
 #pragma once
-#include "pretty_print.hpp"
+#include "utils/pretty_print.hpp"
 #include <sstream>
 
 class chronicles_t {
@@ -22,8 +22,9 @@ public:
   void Prolog() noexcept;
   void Epilog() noexcept;
 
+  inline log_t Log() noexcept { return log_t(*this); }
   template <class Object> inline log_t Log(const Object& object) noexcept {
-    return std::move(log_t(*this) << object);
+    return std::move(Log() << object << " ");
   }
 
 private:
