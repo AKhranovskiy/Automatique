@@ -47,9 +47,9 @@ World::area_list_t World::get_areas(const World::position_t& center, distance_t 
   area_set_t visited{};
 
   while (!queue.empty()) {
-    auto node = queue.extract(queue.begin());
-    auto& current = node.value();
-    if (visited.insert(std::move(node)).inserted && distance(center, current) <= radius) {
+    auto current = *queue.begin();
+    queue.erase(queue.begin());
+    if (visited.insert(current).second && distance(center, current) <= radius) {
       if (check_tile(current)) result.insert(current);
       auto nhs = neighborhs(current);
       queue.insert(nhs.begin(), nhs.end());
