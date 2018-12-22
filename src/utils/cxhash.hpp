@@ -17,9 +17,10 @@ template <std::size_t N> constexpr std::uint64_t FNVhash(const std::uint8_t (&da
 }
 
 template <typename T> constexpr std::uint64_t FNVhash(T a, T b) {
-  typedef std::uint8_t(data_t)[sizeof(T) * 2];
+  using data_t = std::uint8_t[sizeof(T) * 2];
 
   const T buf[2] = {a, b};
+  // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
   const data_t& ref = *reinterpret_cast<const data_t*>(&buf);
   return FNVhash(ref);
 }

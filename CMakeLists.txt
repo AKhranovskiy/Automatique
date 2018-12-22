@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.9)
 
 project(Automatique
-  VERSION 0.7.1.0
+  VERSION 0.7.2.0
   DESCRIPTION "Automatic robotic world"
   LANGUAGES CXX
 )
@@ -17,6 +17,7 @@ add_compile_options(-pedantic-errors)
 add_compile_options(-Wshorten-64-to-32)
 add_compile_options(-Wfloat-equal)
 add_compile_options(-fstrict-aliasing)
+add_compile_options(-fno-rtti)
 
 set(IMPLEMENTATION_SOURCES
   src/chronicles.cpp
@@ -33,6 +34,7 @@ set(IMPLEMENTATION_SOURCES
 set(IMPLEMENTATION_HEADERS
   src/chronicles.h
   src/modules/base_unit_control.h
+  src/modules/core.hpp
   src/modules/discovery.h
   src/modules/mining.h
   src/modules/warehouse.h
@@ -44,11 +46,15 @@ set(IMPLEMENTATION_HEADERS
   src/traits/discover.hpp
   src/traits/mine.hpp
   src/traits/move.hpp
+  src/types/id.h
+  src/types/optref.hpp
+  src/types/tags.h
   src/types/position.hpp
   src/types/resourcetype.h
   src/types/tilecontent.h
   src/units/basic.h
   src/units/carrier.h
+  src/utils/algorithm.hpp
   src/utils/cxdate.hpp
   src/utils/cxhash.hpp
   src/utils/future.hpp

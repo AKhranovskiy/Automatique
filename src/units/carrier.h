@@ -7,5 +7,4 @@ struct unit_carrier_t : public unit_basic_t {
   EResourceType type{EResourceType::None};
 
   using unit_basic_t::unit_basic_t;
-  ~unit_carrier_t() override = default;
 };

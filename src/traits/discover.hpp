@@ -14,7 +14,7 @@ struct trait_discover_t {
         auto path = find_path(current_pos, area);
         control_block.move(path).finish();
       }
-      return create_operation<ControlBlock, unit_basic_t>(*this, &operation, area);
+      return create_operation<ControlBlock>(*this, &operation, area);
     }
   };
 

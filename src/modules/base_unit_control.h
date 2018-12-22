@@ -3,6 +3,7 @@
 #include "primitives/module_control.hpp"
 #include "primitives/operation.h"
 #include "primitives/operation_queue.hpp"
+#include "types/id.h"
 #include "world.h"
 #include <list>
 #include <set>
@@ -14,21 +15,30 @@ protected:
   using queue_t = operation_queue_t<base_unit_control_t<Unit, Traits...>, operation_t>;
 
 public:
-  using module_id_t = size_t;
+  using unit_t = Unit;
   using result_t = typename queue_t::idle_future_t;
 
-  const module_id_t id;
+  const entity_id id;
   const World::position_t position;
 
-  explicit base_unit_control_t(module_id_t id, World::position_t position) noexcept
+  explicit base_unit_control_t(entity_id id, World::position_t position) noexcept
       : queue_t(*this), id{id}, position{position} {}
 
   using unit_ref_list_t = std::initializer_list<std::reference_wrapper<Unit>>;
+
+  std::vector<std::reference_wrapper<unit_t>> unassign_idlers(size_t amount) noexcept {
+    std::vector<std::reference_wrapper<unit_t>> units;
+    for (auto i = 0u; i < std::min(amount, idler_count()); ++i) {
+      units.emplace_back(get_idler().object());
+    }
+    return units;
+  }
 
 protected:
   using control_t = control_module_t<Unit, Traits...>;
 
   void assign_unit(Unit& unit) { _idlers.emplace_back(unit); }
+  size_t idler_count() const noexcept { return _idlers.size(); }
   bool has_idlers() const noexcept { return !_idlers.empty(); }
   control_t get_idler() {
     assert(has_idlers());

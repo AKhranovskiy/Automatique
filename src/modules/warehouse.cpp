@@ -2,7 +2,7 @@
 #include "units/carrier.h"
 #include "utils/pretty_print.hpp"
 
-module_warehouse_t::module_warehouse_t(module_id_t id, World::position_t position) noexcept
+module_warehouse_t::module_warehouse_t(entity_id id, World::position_t position) noexcept
     : id{id}, position{position}, _storage{{EResourceType::Coal, {0, 100u}},
                                            {EResourceType::Ore, {0, 100u}},
                                            {EResourceType::Water, {0, 100u}}} {}

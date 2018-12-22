@@ -8,9 +8,13 @@ class chronicles_t {
     std::stringstream _stream;
 
   public:
-    log_t(chronicles_t& chronicles);
+    explicit log_t(chronicles_t& chronicles);
     ~log_t();
+
     log_t(log_t&&) = default;
+    log_t(const log_t&) = delete;
+    log_t& operator=(log_t&&) = default;
+    log_t& operator=(const log_t&) = delete;
 
     template <class Message> inline log_t& operator<<(const Message& message) noexcept {
       _stream << message;
@@ -32,5 +36,5 @@ private:
 };
 
 class null_chronicles final : public chronicles_t {
-  void print(const std::stringstream&) const noexcept override {}
+  void print(const std::stringstream& /*stream*/) const noexcept override {}
 };

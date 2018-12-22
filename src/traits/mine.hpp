@@ -21,7 +21,7 @@ struct trait_mine_t {
         auto path = find_path(current_pos, area);
         control_block.move(path).finish();
       }
-      return create_operation<ControlBlock, unit_carrier_t>(*this, &operation_mine, area);
+      return create_operation<ControlBlock>(*this, &operation_mine, area);
     }
   };
 

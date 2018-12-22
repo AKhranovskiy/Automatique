@@ -21,16 +21,16 @@ ETileContent World::get_tile_info(position_t position) noexcept {
         e.seed(44);
         return e;
       }();
-      assert(get_tile_content_count() == 5);
+      static_assert(get_tile_content_count() == 5);
       static std::discrete_distribution<> dis({0, 88, 4, 4, 4});
       return static_cast<ETileContent>(dis(gen));
     };
     const auto& [it, r] = World::Tiles.emplace(position, tile_gen());
     const auto& [p, tile] = *it;
     return tile;
-  } else {
-    return World::Tiles.at(position);
   }
+
+  return World::Tiles.at(position);
 }
 
 World::area_list_t World::get_areas(const World::position_t& center, distance_t radius,
@@ -57,6 +57,14 @@ World::area_list_t World::get_areas(const World::position_t& center, distance_t 
   }
 
   return {result.begin(), result.end()};
+}
+
+World::area_list_t World::get_areas(ETileContent tile) noexcept {
+  area_list_t result;
+  for (const auto& [pos, cont] : World::Tiles) {
+    if (cont == tile) result.push_back(pos);
+  }
+  return result;
 }
 
 chronicles_t& World::Chronicles() noexcept { return *CurrentChronicles; }

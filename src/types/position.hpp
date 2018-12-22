@@ -30,6 +30,8 @@ template <coord_t W, coord_t H> struct position_t {
 
   constexpr position_t& operator=(const position_t& pos) noexcept = default;
   constexpr position_t& operator=(position_t&& pos) noexcept = default;
+
+  ~position_t() = default;
 };
 
 // TODO Spaceship operator?

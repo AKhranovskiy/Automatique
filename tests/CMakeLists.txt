@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.9)
 
 project(Automatique.tests LANGUAGES CXX)
 
-add_compile_options(-fprofile-instr-generate -fcoverage-mapping)
+# add_compile_options(-fprofile-instr-generate -fcoverage-mapping)
 
 add_executable(${PROJECT_NAME}
   main.cpp
@@ -13,7 +13,7 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
   PRIVATE
-    --coverage
+  # --coverage
     Catch2
     Automatique
 )

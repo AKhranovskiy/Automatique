@@ -8,7 +8,7 @@
 struct trait_move_t {
   template <class ControlBlock> struct extension {
     ControlBlock& move(World::path_t path) {
-      return create_operation<ControlBlock, unit_basic_t>(*this, &operation, path);
+      return create_operation<ControlBlock>(*this, &operation, path);
     }
   };
 

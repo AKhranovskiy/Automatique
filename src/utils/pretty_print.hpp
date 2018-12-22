@@ -14,16 +14,13 @@ std::ostream& operator<<(std::ostream& os, const position_t<W, H>& pos) {
 }
 
 template <class T> std::ostream& operator<<(std::ostream& os, const std::optional<T>& o) {
-  if (o) {
-    return os << *o;
-  } else {
-    return os << "none";
-  }
+  if (o) return os << *o;
+  return os << "none";
 }
 
 // pretty-print a tuple
 template <class Tuple, std::size_t... Is>
-void print_tuple_impl(std::ostream& os, const Tuple& t, std::index_sequence<Is...>) {
+void print_tuple_impl(std::ostream& os, const Tuple& t, std::index_sequence<Is...> /*seq*/) {
   ((os << (Is == 0 ? "" : ", ") << std::get<Is>(t)), ...);
 }
 

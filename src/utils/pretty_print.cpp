@@ -7,8 +7,8 @@
 std::ostream& operator<<(std::ostream& os, const unit_basic_t& unit) {
   return os << "unit#" << unit.id;
 }
-std::ostream& operator<<(std::ostream& os, const unit_carrier_t& miner) {
-  return os << "carrier#" << miner.id;
+std::ostream& operator<<(std::ostream& os, const unit_carrier_t& carrier) {
+  return os << "carrier#" << carrier.id;
 }
 
 std::ostream& operator<<(std::ostream& os, ETileContent content) {
@@ -66,9 +66,7 @@ std::ostream& operator<<(std::ostream& os, const World& /*world*/) {
 
   os << "┗";
   for (auto i = 0u; i < World::WIDTH; ++i) os << "━";
-  os << "┛\n";
-
-  os << '\n';
+  os << "┛";
   return os;
 }
 

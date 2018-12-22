@@ -1,6 +1,6 @@
 #include "modules/discovery.h"
 
-module_discovery_t::module_discovery_t(module_id_t id, World::position_t position) noexcept
+module_discovery_t::module_discovery_t(entity_id id, World::position_t position) noexcept
     : base_unit_control_t{id, position} {}
 
 module_discovery_t::result_t module_discovery_t::discover(distance_t radius) noexcept {

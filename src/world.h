@@ -20,6 +20,7 @@ struct World {
   using area_list_t = std::vector<World::position_t>;
   static area_list_t get_areas(const World::position_t& center, distance_t radius,
                                ETileContent tile) noexcept;
+  static area_list_t get_areas(ETileContent tile) noexcept;
 
   static chronicles_t& Chronicles() noexcept;
   static chronicles_t& Chronicles(chronicles_t& new_chronicles) noexcept;

@@ -2,12 +2,16 @@
 Checks:          '*,
                   -bugprone-exception-escape,
                   -cppcoreguidelines-avoid-magic-numbers,
+                  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
                   -fuchsia-*,
                   -google-readability-braces-around-statements,
+                  -google-readability-todo,
                   -google-runtime-references,
                   -hicpp-braces-around-statements,
+                  -hicpp-no-array-decay,
+                  -llvm-header-guard,
                   -readability-braces-around-statements,
-                  -readability-magic-numbers,
+                  -readability-magic-numbers
                   '
 WarningsAsErrors: ''
 HeaderFilterRegex: ''

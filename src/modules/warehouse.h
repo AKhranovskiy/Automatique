@@ -1,6 +1,8 @@
 #pragma once
 
 #include "primitives/operation.h"
+#include "types/id.h"
+#include "types/tags.h"
 #include "world.h"
 #include <exception>
 #include <optional>
@@ -23,16 +25,14 @@ public:
       : std::runtime_error("Storage for resource type {" + to_string(type) + "} is full") {}
 };
 
-class module_warehouse_t {
+class module_warehouse_t : public tag_module_t {
 public:
-  using module_id_t = size_t;
-
-  const module_id_t id;
+  const entity_id id;
   const World::position_t position;
 
-  explicit module_warehouse_t(module_id_t id, World::position_t position) noexcept;
+  explicit module_warehouse_t(entity_id id, World::position_t position) noexcept;
 
-  operation_t unload(unit_carrier_t& miner);
+  operation_t unload(unit_carrier_t& carrier);
 
   std::optional<size_t> get_resource_amount(EResourceType type) const noexcept;
 

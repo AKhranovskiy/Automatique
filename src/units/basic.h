@@ -1,19 +1,16 @@
 #pragma once
 
+#include "types/id.h"
+#include "types/tags.h"
 #include "world.h"
 #include <cassert>
 
-struct unit_basic_t {
-  using unit_id = std::size_t;
-  static constexpr const unit_id InvalidId{0u};
-
-  const unit_id id;
+struct unit_basic_t : tag_unit_t {
+  const entity_id id;
   World::position_t position;
 
-  constexpr explicit unit_basic_t(unit_id id, World::position_t position) noexcept
+  constexpr explicit unit_basic_t(entity_id id, World::position_t position) noexcept
       : id{id}, position{position} {
     assert(id != InvalidId);
   }
-
-  virtual ~unit_basic_t() = default;
 };
